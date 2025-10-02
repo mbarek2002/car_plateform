@@ -1,0 +1,17 @@
+from interfaces.llm_interface import LLMInterface
+from implementations.llm.gemini_llm import GeminiLLM
+from implementations.llm.ngrok_llm import NgrokLLM
+# from implementations.llm.huggingface_llm import HuggingFaceLLM
+from implementations.llm.huggingface_transformer_llm import HuggingFaceLLM
+
+class LLMFactory:
+    @staticmethod
+    def create(provider: str, api_key: str = None, **kwargs) -> LLMInterface:
+        if provider == "gemini":
+            return GeminiLLM(api_key)
+        elif provider == "ngrok":
+            return NgrokLLM(kwargs.get("ngrok_url", "https://03bb4920c870.ngrok-free.app"))
+        elif provider == "huggingface":
+            return HuggingFaceLLM(api_key,kwargs.get("base_model", "unsloth/llama-3-8b-bnb-4bit") ,kwargs.get("adapter_model", "ihebmbarek/driver_model"))
+        else:
+            raise ValueError(f"Unknown LLM provider: {provider}")

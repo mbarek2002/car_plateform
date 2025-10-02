@@ -1,0 +1,15 @@
+pymongo
+chromadb
+pinecone
+google-generativeai
+langchain
+PyPDF2
+sentence-transformers
+python-dotenv
+fastapi
+uvicorn[standard]
+python-multipart
+requests
+torch 
+bitsandbytes
+accelerate>=0.26.0
