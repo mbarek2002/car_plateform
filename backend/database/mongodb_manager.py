@@ -3,6 +3,7 @@ from datetime import datetime
 from typing import List, Dict, Optional
 from bson import Binary
 from config.settings import settings
+from typing import Dict, Optional , List
 
 class MongoDBManager:
     def __init__(self):
@@ -11,6 +12,7 @@ class MongoDBManager:
         self.pdfs = self.db['pdfs']
         self.conversations = self.db['conversations']
         self.messages = self.db['messages']
+        self.chunks = self.db['chunks']
         self._create_indexes()
     
     def _create_indexes(self):
@@ -18,6 +20,7 @@ class MongoDBManager:
         self.pdfs.create_index("conversation_id")
         self.conversations.create_index("conversation_id")
         self.messages.create_index([("conversation_id",1) , ("created_at",1)])
+        self.chunks.create_index("chunk_id")
     
     def save_pdf(self, pdf_id: str, filename: str, content: bytes, 
                  conversation_id: Optional[str] = None) -> str:
@@ -81,3 +84,14 @@ class MongoDBManager:
 
     def delete_messages(self,conversation_id:str):
         self.messages.delete_many({"conversation_id":conversation_id})
+
+
+    def save_chunks(self, docs: List[Dict]) -> list:
+        """
+        Save multiple document chunks to MongoDB.
+        Returns a list of inserted IDs.
+        """
+        
+        result = self.chunks.insert_many(docs)
+        return [str(_id) for _id in result.inserted_ids]
+    

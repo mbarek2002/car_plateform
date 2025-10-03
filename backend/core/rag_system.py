@@ -22,7 +22,6 @@ class RAGSystem:
         self.llm = LLMFactory.create(
             llm_prov, 
             settings.GEMINI_API_KEY if llm_prov == "gemini" 
-            # else settings.NGROK_API_KEY if llm_prov=="ngrok"  
             else None
         )
         self.embedding = EmbeddingFactory.create(
@@ -43,16 +42,40 @@ class RAGSystem:
         # Extract and process text
         text = self.pdf_service.extract_text(pdf_path)
         chunks = self.pdf_service.split_text(text)
+        # Generate embeddings
+        embeddings = self.embedding.embed(chunks)
         
+        docs =[]
+        pdf_id = f"pdf_{datetime.now().timestamp()}"
+
+        
+        # for i , chunk in enumerate(chunks):
+        #     doc = {
+        #         "chunk_id": f"chunk_{i}",
+        #         "text": chunk,
+        #         "metadata": {
+        #             "source": os.path.basename(pdf_path),
+        #             "pdf_id": pdf_id,
+        #             "conversation_id": conversation_id.strip() if conversation_id.strip() != "" else None,
+        #         },
+        #         "embedding_model": settings.EMBEDDING_MODEL,
+        #         "embedding": embeddings[i],
+        #         "chunk_index": i,
+        #         "created_at": datetime.utcnow()
+        #     }
+        #     docs.append(doc)
+
+        # if docs:
+        #     results = self.db_manager.save_chunks(docs)
+        #     print(f"✅ Saved {len(docs)} chunks to MongoDB. IDs: {results}")
+                
+
         # Save PDF to MongoDB
         with open(pdf_path, 'rb') as f:
             content = f.read()
-        pdf_id = f"pdf_{datetime.now().timestamp()}"
         filename = os.path.basename(pdf_path)
-        self.db_manager.save_pdf(pdf_id, filename, content, conversation_id)
-        
-        # Generate embeddings
-        embeddings = self.embedding.embed(chunks)
+
+        self.db_manager.save_pdf(pdf_id, filename, content, conversation_id)        
         
         # Prepare metadata
         metadata = [
@@ -76,14 +99,20 @@ class RAGSystem:
         
         # Search vector database
         results = self.vectordb.search(query_embedding, top_k)
+        print("herrre")
         
-        print(f"Search results: {results}")
+        print(f"Found {len(results)} results, top score = {results[0]['score']:.3f}")
         
+        for r in results:
+            print(r['metadata'])
         # Filter by conversation if specified
         if conversation_id:
             results = [r for r in results 
                       if r['metadata'].get('conversation_id') == conversation_id]
         
+        print("afterr filtering")
+        print(f"Found {len(results)} results, top score = {results[0]['score']:.3f}")
+
         # Build context
         context = "\n\n".join([r['text'] for r in results])
         

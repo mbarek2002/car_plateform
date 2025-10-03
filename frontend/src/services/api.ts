@@ -94,6 +94,7 @@ export const apiService = {
   listConversations: async () => {
     return retryRequest(async () => {
       const { data } = await apiClient.get('/conversations');
+      console.log('Fetched conversations:', data);
       return data as Conversation[];
     });
   },

@@ -24,6 +24,7 @@ class HuggingFaceEmbedding(EmbeddingInterface):
         )
         return embeddings.tolist()
     
+    
     def get_dimension(self) -> int:
         """Get embedding dimension"""
         return self.dimension
