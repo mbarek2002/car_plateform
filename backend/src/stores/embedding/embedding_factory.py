@@ -1,6 +1,5 @@
-from interfaces.embedding_interface import EmbeddingInterface
-from implementations.embeddings.gemini_embedding import GeminiEmbedding
-from implementations.embeddings.huggingface_embedding import HuggingFaceEmbedding
+from src.stores.embedding.embedding_interface import EmbeddingInterface
+from src.stores.embedding.providers import GeminiEmbedding , HuggingFaceEmbedding
 
 class EmbeddingFactory:
     @staticmethod

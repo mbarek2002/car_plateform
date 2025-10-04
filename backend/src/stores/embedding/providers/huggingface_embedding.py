@@ -1,6 +1,6 @@
 from typing import List
 from sentence_transformers import SentenceTransformer
-from interfaces.embedding_interface import EmbeddingInterface
+from src.stores.embedding.embedding_interface import EmbeddingInterface
 
 class HuggingFaceEmbedding(EmbeddingInterface):
     def __init__(self, api_key: str = None, model_name: str = "all-MiniLM-L6-v2"):

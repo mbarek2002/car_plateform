@@ -1,6 +1,6 @@
 import google.generativeai as genai
 from typing import List
-from interfaces.embedding_interface import EmbeddingInterface
+from src.stores.embedding.embedding_interface import EmbeddingInterface
 
 class GeminiEmbedding(EmbeddingInterface):
     def __init__(self, api_key: str):

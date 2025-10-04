@@ -7,8 +7,8 @@ import os
 from pathlib import Path
 
 from core.rag_system import RAGSystem
-from api.models import (
-    ConversationCreate, ConversationResponse, QueryRequest, 
+from src.schemas import (
+    ChatRequest, ChatResponse, ConversationCreate, ConversationResponse, MessageCreate, MessageResponse, QueryRequest, 
     QueryResponse, PDFUploadResponse, PDFInfo, ProviderConfig, ErrorResponse
 )
 
@@ -228,6 +228,51 @@ async def delete_pdf(pdf_id: str):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+@app.get("/conversations/{conversation_id}/messages", response_model=List[MessageResponse], tags=["Conversations"])
+async def list_messages(conversation_id: str, limit: int = 20):
+    try:
+        msgs = rag_system.conversation_service.list_messages(conversation_id, limit=limit, ascending=True)
+        return [
+            MessageResponse(
+                conversation_id=m["conversation_id"],
+                role=m["role"],
+                content=m["content"],
+                created_at=m["created_at"]
+            ) for m in msgs
+        ]
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/conversations/{conversation_id}/messages", tags=["Conversations"])
+async def add_message(conversation_id: str, body: MessageCreate):
+    try:
+        if body.conversation_id != conversation_id:
+            raise HTTPException(status_code=400, detail="conversation_id mismatch")
+        rag_system.conversation_service.add_message(conversation_id, body.role, body.content)
+        return {"message": "Message saved"}
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/chat", response_model=ChatResponse, tags=["Query"])
+async def chat(request: ChatRequest):
+    try:
+        result = rag_system.chat(
+            conversation_id=request.conversation_id,
+            message=request.message,
+            top_k=request.top_k,
+            history_limit=request.history_limit
+        )
+        return ChatResponse(
+            conversation_id=request.conversation_id,
+            user_message_id=result["user_message_id"],
+            assistant_message_id=result["assistant_message_id"],
+            answer=result["answer"]
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 # ==================== QUERY ENDPOINTS ====================
 
 @app.post("/query", response_model=QueryResponse, tags=["Query"])
@@ -239,6 +284,10 @@ async def query_rag(request: QueryRequest):
             conversation_id=request.conversation_id,
             top_k=request.top_k
         )
+        print(QueryResponse(
+            answer=answer,
+            conversation_id=request.conversation_id
+        ))
         return QueryResponse(
             answer=answer,
             conversation_id=request.conversation_id
@@ -329,14 +378,14 @@ from core.rag_system import RAGSystem
 
 def main():
     # Initialize RAG system with default providers from config
-    rag = RAGSystem()
+    # rag = RAGSystem()
     
     # Or specify providers explicitly
-    # rag = RAGSystem(
-    #     llm_provider="gemini",
-    #     embedding_provider="huggingface",
-    #     vectordb_provider="chroma"
-    # )
+    rag = RAGSystem(
+        llm_provider="gemini",
+        embedding_provider="huggingface",
+        vectordb_provider="chroma"
+    )
     
     # Create conversation
     conv_id = rag.create_conversation("Project Docs")

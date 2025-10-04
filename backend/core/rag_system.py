@@ -3,11 +3,11 @@ import re
 from typing import Optional, List
 from datetime import datetime
 from src.stores.llm.llm_factory import LLMFactory
-from factories.embedding_factory import EmbeddingFactory
+from src.stores.embedding.embedding_factory import EmbeddingFactory
 from src.stores.vectordb.vectordb_factory import VectorDBFactory
 from database.mongodb_manager import MongoDBManager
-from services.pdf_service import PDFService
-from services.conversation_service import ConversationService
+from src.services.pdf_service import PDFService
+from src.services.conversation_service import ConversationService
 from config.settings import settings
 
 class RAGSystem:
