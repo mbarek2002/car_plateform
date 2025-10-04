@@ -1,6 +1,6 @@
 import chromadb
 from typing import List, Dict
-from interfaces.vectordb_interface import VectorDBInterface
+from src.stores.vectordb.vectordb_interface import VectorDBInterface
 
 class ChromaDB(VectorDBInterface):
     def __init__(self, collection_name: str = "rag_collection"):

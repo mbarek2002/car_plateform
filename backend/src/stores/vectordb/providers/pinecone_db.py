@@ -1,6 +1,6 @@
 from pinecone import Pinecone
 from typing import List, Dict
-from interfaces.vectordb_interface import VectorDBInterface
+from src.stores.vectordb.vectordb_interface import VectorDBInterface
 
 class PineconeDB(VectorDBInterface):
     def __init__(self, api_key: str, index_name: str = "rag-index"):

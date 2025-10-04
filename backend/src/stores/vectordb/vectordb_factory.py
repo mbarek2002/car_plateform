@@ -1,6 +1,5 @@
-from interfaces.vectordb_interface import VectorDBInterface
-from implementations.vectordb.chroma_db import ChromaDB
-from implementations.vectordb.pinecone_db import PineconeDB
+from src.stores.vectordb.vectordb_interface import VectorDBInterface
+from src.stores.vectordb.providers import PineconeDB , ChromaDB
 
 class VectorDBFactory:
     @staticmethod

@@ -4,7 +4,7 @@ from typing import Optional, List
 from datetime import datetime
 from src.stores.llm.llm_factory import LLMFactory
 from factories.embedding_factory import EmbeddingFactory
-from factories.vectordb_factory import VectorDBFactory
+from src.stores.vectordb.vectordb_factory import VectorDBFactory
 from database.mongodb_manager import MongoDBManager
 from services.pdf_service import PDFService
 from services.conversation_service import ConversationService
