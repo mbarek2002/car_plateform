@@ -2,7 +2,7 @@ import os
 import re
 from typing import Optional, List
 from datetime import datetime
-from factories.llm_factory import LLMFactory
+from src.stores.llm.llm_factory import LLMFactory
 from factories.embedding_factory import EmbeddingFactory
 from factories.vectordb_factory import VectorDBFactory
 from database.mongodb_manager import MongoDBManager

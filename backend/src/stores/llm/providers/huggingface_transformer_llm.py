@@ -1,8 +1,8 @@
 from transformers import pipeline , AutoModelForCausalLM , AutoTokenizer
 from peft import PeftModel
-from interfaces.llm_interface import LLMInterface
+from src.stores.llm.llm_interface import LLMInterface
 
-class HuggingFaceLLM(LLMInterface):
+class HuggingFaceTransformerLLM(LLMInterface):
     def __init__(self, 
                 api_key: str = None,
                 base_model: str = "unsloth/llama-3-8b-bnb-4bit",

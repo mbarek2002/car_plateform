@@ -1,5 +1,5 @@
 import requests
-from interfaces.llm_interface import LLMInterface
+from src.stores.llm.llm_interface import LLMInterface
 
 class NgrokLLM(LLMInterface):
     def __init__(self, 

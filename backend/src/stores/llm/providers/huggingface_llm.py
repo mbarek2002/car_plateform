@@ -1,5 +1,5 @@
 from transformers import pipeline
-from interfaces.llm_interface import LLMInterface
+from src.stores.llm.llm_interface import LLMInterface
 
 class HuggingFaceLLM(LLMInterface):
     def __init__(self, api_key: str = None, model_name: str = "ihebmbarek/llama3-healthcare-full"):

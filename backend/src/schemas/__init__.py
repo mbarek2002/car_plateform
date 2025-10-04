@@ -4,13 +4,15 @@ from .message_schema import MessageCreate , MessageResponse
 from .conversation_schema import ConversationResponse , ConversationCreate
 from .pdf_schema import PDFUploadResponse , PDFInfo 
 from .provider_schema import ProviderConfig
+from .error_schema import ErrorResponse
 
 
 __all__ = [
     "ConversationCreate", "ConversationResponse",
     "QueryRequest", "QueryResponse",
     "PDFUploadResponse", "PDFInfo",
-    "ProviderConfig",
+    "ProviderConfig","ErrorResponse",
     "MessageCreate", "MessageResponse",
-    "ChatRequest", "ChatResponse",
+    "ChatRequest", "ChatResponse"
+    
 ]

@@ -7,7 +7,7 @@ import os
 from pathlib import Path
 
 from core.rag_system import RAGSystem
-from api.models import (
+from src.schemas import (
     ChatRequest, ChatResponse, ConversationCreate, ConversationResponse, MessageCreate, MessageResponse, QueryRequest, 
     QueryResponse, PDFUploadResponse, PDFInfo, ProviderConfig, ErrorResponse
 )

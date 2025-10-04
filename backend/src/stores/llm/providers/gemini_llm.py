@@ -1,5 +1,5 @@
 import google.generativeai as genai
-from interfaces.llm_interface import LLMInterface
+from src.stores.llm.llm_interface import LLMInterface
 
 class GeminiLLM(LLMInterface):
     def __init__(self, api_key: str):
