@@ -147,7 +147,6 @@ class RAGSystem:
         # Generate response
         return self.llm.generate(prompt)
         
-
     def chat(self, conversation_id: str, message: str, top_k: int = 3, history_limit: int = 20) -> dict:
         user_msg_id = self.db_manager.save_messages(conversation_id , role="user" , content=message)
 
@@ -171,7 +170,6 @@ class RAGSystem:
             "assistant_message_id": assistant_msg_id,
             "answer": answer,
         }
-
 
     def get_conversation_pdfs(self, conversation_id: str) -> List:
         return self.db_manager.get_pdfs_by_conversation(conversation_id)

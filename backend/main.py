@@ -1,7 +1,7 @@
-from fastapi import FastAPI, UploadFile, File, HTTPException, Form
+from fastapi import FastAPI, UploadFile, File, HTTPException, Form , Depends
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
-from typing import Optional, List
+from typing import Optional, List 
 import shutil
 import os
 from pathlib import Path
@@ -9,8 +9,12 @@ from pathlib import Path
 from core.rag_system import RAGSystem
 from src.schemas import (
     ChatRequest, ChatResponse, ConversationCreate, ConversationResponse, MessageCreate, MessageResponse, QueryRequest, 
-    QueryResponse, PDFUploadResponse, PDFInfo, ProviderConfig, ErrorResponse
+    QueryResponse, PDFUploadResponse, PDFInfo, ProviderConfig, ErrorResponse , PredictionOutput , PredictionInput
 )
+
+from src.services.prediction_service import PredictionService
+from src.db.connection import get_database
+
 
 # Initialize FastAPI
 app = FastAPI(
@@ -357,6 +361,18 @@ async def get_statistics():
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+    
+# ==================== ERROR HANDLERS ====================
+@app.post("/predict", response_model=PredictionOutput)
+def predict(data: PredictionInput, db=Depends(get_database)):
+    service = PredictionService(db)
+    return service.predict(data)
+
+@app.get("/predictions")
+def get_predictions(db=Depends(get_database)):
+    service = PredictionService(db)
+    return service.get_all_predictions()
+
 
 # ==================== ERROR HANDLERS ====================
 

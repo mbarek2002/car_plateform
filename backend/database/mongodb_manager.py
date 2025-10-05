@@ -85,7 +85,6 @@ class MongoDBManager:
     def delete_messages(self,conversation_id:str):
         self.messages.delete_many({"conversation_id":conversation_id})
 
-
     def save_chunks(self, docs: List[Dict]) -> list:
         """
         Save multiple document chunks to MongoDB.
