@@ -1,4 +1,4 @@
-from pymongo import Database
+from pymongo.database import Database
 from datetime import datetime
 from typing import List , Dict
 
@@ -6,7 +6,7 @@ class PredictionRepository:
     def __init__(self, db: Database):
         self.collection = db["predictions"]
 
-    def save_prediction(self, input_data:Dict , predicted_price:float )->Dict :
+    def save_prediction(self, input_data:Dict , predicted_price:float )->Dict:
         document = {
             **input_data , 
             "predicted_price" : predicted_price,

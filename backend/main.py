@@ -363,12 +363,13 @@ async def get_statistics():
         raise HTTPException(status_code=500, detail=str(e))
     
 # ==================== ERROR HANDLERS ====================
-@app.post("/predict", response_model=PredictionOutput)
+@app.post("/predict", response_model=PredictionOutput ,  tags=["price prediction"])
 def predict(data: PredictionInput, db=Depends(get_database)):
+    print(data)
     service = PredictionService(db)
     return service.predict(data)
 
-@app.get("/predictions")
+@app.get("/predictions", tags=["price prediction"])
 def get_predictions(db=Depends(get_database)):
     service = PredictionService(db)
     return service.get_all_predictions()

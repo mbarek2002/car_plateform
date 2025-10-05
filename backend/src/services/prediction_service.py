@@ -3,34 +3,67 @@ from src.schemas.prediction_schema import PredictionInput, PredictionOutput
 import joblib
 import numpy as np
 from fastapi import HTTPException
+import os
+import pandas as pd
 
 class PredictionService:
-    def __init__(self , db):
+    def __init__(self, db):
         self.repository = PredictionRepository(db)
-        self.model = joblib.load("model.pkl")
+        model_path = "model.pkl"
+        
+        if not os.path.exists(model_path):
+            raise FileNotFoundError(f"Model file '{model_path}' not found")
+        
+        self.model = joblib.load(model_path)
 
     def predict(self , data : PredictionInput) -> PredictionOutput:
         try:
-            features = np.array([[
-                data.Milage_High,
-                data.Accident_Impact,
-                data.Age_Old,
-                data.Milage_Medium,
-                data.clean_title,
-                data.Milage_Very_High,
-                data.Vehicle_Age,
-                data.hp,
-                data.Age_Mid,
-                data.engine_displacement,
-                data.brand,
-                data.fuel_type,
-                data.Age_Very_Old,
-                data.is_v_engine,
-                data.Mileage_per_Year,
-                data.transmission
-            ]])
+            # features = np.array([[
+            #     data.Milage_High,
+            #     data.Accident_Impact,
+            #     data.Age_Old,
+            #     data.Milage_Medium,
+            #     data.clean_title,
+            #     data.Milage_Very_High,
+            #     data.Vehicle_Age,
+            #     data.hp,
+            #     data.Age_Mid,
+            #     data.engine_displacement,
+            #     data.brand,
+            #     data.fuel_type,
+            #     data.Age_Very_Old,
+            #     data.is_v_engine,
+            #     data.Mileage_per_Year,
+            #     data.transmission
+            # ]])
+            features = [
+                "Milage_High", "Accident_Impact", "Age_Old", "Milage_Medium",
+                "clean_title", "Milage_Very High", "Vehicle_Age", "hp",
+                "Age_Mid", "engine displacement", "brand", "fuel_type",
+                "Age_Very Old", "is_v_engine", "Mileage_per_Year", "transmission"
+                ]
+            test_data = pd.DataFrame([{
+                    "Milage_High": data.Milage_High,
+                    "Accident_Impact": data.Accident_Impact,
+                    "Age_Old": data.Age_Old,
+                    "Milage_Medium": data.Milage_Medium,
+                    "clean_title": data.clean_title,
+                    "Milage_Very High": data.Milage_Very_High,
+                    "Vehicle_Age": data.Vehicle_Age,
+                    "hp": data.hp,
+                    "Age_Mid": data.Age_Mid,
+                    "engine displacement": data.engine_displacement,
+                    "brand": data.brand,           # Encoded brand
+                    "fuel_type": data.fuel_type,       # Encoded fuel type
+                    "Age_Very Old": data.Age_Very_Old,
+                    "is_v_engine": data.is_v_engine,
+                    "Mileage_per_Year": data.Mileage_per_Year,
+                    "transmission": data.transmission
+                }])
             
-            prediction = self.model.predict(features)
+            test_data = test_data[features]
+            
+            prediction = self.model.predict(test_data)
             predicted_price = float(prediction[0])
             
             self.repository.save_prediction(data.dict(), predicted_price)
