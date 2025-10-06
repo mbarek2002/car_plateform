@@ -5,37 +5,25 @@ import numpy as np
 from fastapi import HTTPException
 import os
 import pandas as pd
+import warnings
+import pickle
 
 class PredictionService:
     def __init__(self, db):
         self.repository = PredictionRepository(db)
-        model_path = "model.pkl"
+        model_path = "src/models/model.pkl"
         
         if not os.path.exists(model_path):
             raise FileNotFoundError(f"Model file '{model_path}' not found")
         
-        self.model = joblib.load(model_path)
+        # self.model = joblib.load(model_path)
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            with open(model_path, 'rb') as f:
+                self.model = pickle.load(f)
 
     def predict(self , data : PredictionInput) -> PredictionOutput:
         try:
-            # features = np.array([[
-            #     data.Milage_High,
-            #     data.Accident_Impact,
-            #     data.Age_Old,
-            #     data.Milage_Medium,
-            #     data.clean_title,
-            #     data.Milage_Very_High,
-            #     data.Vehicle_Age,
-            #     data.hp,
-            #     data.Age_Mid,
-            #     data.engine_displacement,
-            #     data.brand,
-            #     data.fuel_type,
-            #     data.Age_Very_Old,
-            #     data.is_v_engine,
-            #     data.Mileage_per_Year,
-            #     data.transmission
-            # ]])
             features = [
                 "Milage_High", "Accident_Impact", "Age_Old", "Milage_Medium",
                 "clean_title", "Milage_Very High", "Vehicle_Age", "hp",
@@ -61,10 +49,11 @@ class PredictionService:
                     "transmission": data.transmission
                 }])
             
+            print(data)
             test_data = test_data[features]
-            
             prediction = self.model.predict(test_data)
-            predicted_price = float(prediction[0])
+            predicted_price = float(np.expm1(prediction[0]))
+            print(predicted_price)
             
             self.repository.save_prediction(data.dict(), predicted_price)
             

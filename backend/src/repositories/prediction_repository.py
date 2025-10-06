@@ -18,7 +18,7 @@ class PredictionRepository:
         return document
     
     def get_all_predictions(self)->List[Dict]:
-        predictions = List(self.collection.find().sort("created_at",-1))
+        predictions = list(self.collection.find().sort("created_at",-1))
         for pred in predictions:
             pred["_id"] = str(pred["_id"])
         return predictions

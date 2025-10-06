@@ -26,11 +26,49 @@ export interface QueryResponse {
   conversation_id?: string | null;
 }
 
+export interface ChatRequest {
+  conversation_id: string;
+  message: string;
+  top_k?: number;
+  history_limit?: number;
+}
+
+export interface ChatResponse {
+  conversation_id: string;
+  user_message_id?: string | null;
+  assistant_message_id?: string | null;
+  answer: string;
+}
+
 export interface StatsResponse {
   total_conversations: number;
   total_pdfs: number;
   global_pdfs: number;
   conversation_pdfs: number;
+}
+
+// Prediction
+export interface PredictionInputApi {
+  Milage_High: number;
+  Accident_Impact: number;
+  Age_Old: number;
+  Milage_Medium: number;
+  clean_title: number;
+  Milage_Very_High: number;
+  Vehicle_Age: number;
+  hp: number;
+  Age_Mid: number;
+  engine_displacement: number;
+  brand: number;
+  fuel_type: number;
+  Age_Very_Old: number;
+  is_v_engine: number;
+  Mileage_per_Year: number;
+  transmission: number;
+}
+
+export interface PredictionOutputApi {
+  price: number;
 }
 
 const apiClient = axios.create({
@@ -94,7 +132,6 @@ export const apiService = {
   listConversations: async () => {
     return retryRequest(async () => {
       const { data } = await apiClient.get('/conversations');
-      console.log('Fetched conversations:', data);
       return data as Conversation[];
     });
   },
@@ -170,9 +207,38 @@ export const apiService = {
     });
   },
 
+  // Chat/Prediction
+  chat: async (conversationId: string, message: string, topK: number = 3, historyLimit: number = 20) => {
+    return retryRequest(async () => {
+      const { data } = await apiClient.post('/chat', {
+        conversation_id: conversationId,
+        message,
+        top_k: topK,
+        history_limit: historyLimit,
+      });
+      return data as ChatResponse;
+    });
+  },
+
   // Stats
   stats: async () => {
     const { data } = await apiClient.get('/stats');
     return data as StatsResponse;
+  },
+
+  // Price Prediction
+  predictPrice: async (payload: PredictionInputApi) => {
+    return retryRequest(async () => {
+      const { data } = await apiClient.post('/predict', payload);
+      console.log(data)
+      return data as PredictionOutputApi;
+    });
+  },
+
+  listPredictions: async () => {
+    return retryRequest(async () => {
+      const { data } = await apiClient.get('/predictions');
+      return data as Array<PredictionInputApi & { price: number; created_at?: string }>;
+    });
   },
 };
