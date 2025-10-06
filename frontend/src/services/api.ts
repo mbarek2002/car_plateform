@@ -40,6 +40,13 @@ export interface ChatResponse {
   answer: string;
 }
 
+export interface MessageResponseApi {
+  conversation_id: string;
+  role: 'user' | 'assistant' | string;
+  content: string;
+  created_at: string;
+}
+
 export interface StatsResponse {
   total_conversations: number;
   total_pdfs: number;
@@ -69,6 +76,12 @@ export interface PredictionInputApi {
 
 export interface PredictionOutputApi {
   price: number;
+}
+
+export interface PredictionHistoryItem extends PredictionInputApi {
+  _id: string;
+  predicted_price: number;
+  created_at: string;
 }
 
 const apiClient = axios.create({
@@ -220,6 +233,16 @@ export const apiService = {
     });
   },
 
+  // Conversation Messages
+  listMessages: async (conversationId: string, limit: number = 50) => {
+    return retryRequest(async () => {
+      const { data } = await apiClient.get(`/conversations/${conversationId}/messages`, {
+        params: { limit },
+      });
+      return data as MessageResponseApi[];
+    });
+  },
+
   // Stats
   stats: async () => {
     const { data } = await apiClient.get('/stats');
@@ -238,7 +261,7 @@ export const apiService = {
   listPredictions: async () => {
     return retryRequest(async () => {
       const { data } = await apiClient.get('/predictions');
-      return data as Array<PredictionInputApi & { price: number; created_at?: string }>;
+      return data as PredictionHistoryItem[];
     });
   },
 };

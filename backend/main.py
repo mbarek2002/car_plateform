@@ -156,6 +156,7 @@ async def upload_pdf(
         # Process PDF
         pdf_id = rag_system.upload_pdf(str(temp_path), conversation_id)
         
+        print("helloooo")
         # Cleanup
         temp_path.unlink()
         

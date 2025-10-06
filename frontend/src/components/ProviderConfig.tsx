@@ -49,25 +49,58 @@ const ProviderConfig: React.FC = () => {
       {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
 
       <FormControl fullWidth sx={{ mb: 2 }}>
-        <InputLabel>LLM Provider</InputLabel>
+        <InputLabel sx={{ color: 'grey.300', '&.Mui-focused': { color: 'grey.100' } }}>LLM Provider</InputLabel>
         <Select
           name="llm_provider"
           value={config.llm_provider || ''}
           label="LLM Provider"
           onChange={handleChange}
+          sx={{
+            color: 'grey.100',
+            backgroundColor: 'rgba(255,255,255,0.04)',
+            '& .MuiOutlinedInput-notchedOutline': { borderColor: 'rgba(255,255,255,0.2)' },
+            '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: 'rgba(255,255,255,0.35)' },
+            '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: 'primary.main' },
+          }}
+          MenuProps={{
+            PaperProps: {
+              sx: {
+                bgcolor: 'rgba(15,23,42,0.95)',
+                color: 'grey.100',
+                '& .MuiMenuItem-root': { '&.Mui-selected': { bgcolor: 'rgba(59,130,246,0.2)' } },
+              },
+            },
+          }}
         >
           <MenuItem value="gemini">Gemini</MenuItem>
           <MenuItem value="huggingface">HuggingFace</MenuItem>
+          <MenuItem value="ngrok">Ngrok</MenuItem>
         </Select>
       </FormControl>
 
       <FormControl fullWidth sx={{ mb: 2 }}>
-        <InputLabel>Embedding Provider</InputLabel>
+        <InputLabel sx={{ color: 'grey.300', '&.Mui-focused': { color: 'grey.100' } }}>Embedding Provider</InputLabel>
         <Select
           name="embedding_provider"
           value={config.embedding_provider || ''}
           label="Embedding Provider"
           onChange={handleChange}
+          sx={{
+            color: 'grey.100',
+            backgroundColor: 'rgba(255,255,255,0.04)',
+            '& .MuiOutlinedInput-notchedOutline': { borderColor: 'rgba(255,255,255,0.2)' },
+            '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: 'rgba(255,255,255,0.35)' },
+            '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: 'primary.main' },
+          }}
+          MenuProps={{
+            PaperProps: {
+              sx: {
+                bgcolor: 'rgba(15,23,42,0.95)',
+                color: 'grey.100',
+                '& .MuiMenuItem-root': { '&.Mui-selected': { bgcolor: 'rgba(59,130,246,0.2)' } },
+              },
+            },
+          }}
         >
           <MenuItem value="gemini">Gemini</MenuItem>
           <MenuItem value="huggingface">HuggingFace</MenuItem>
@@ -75,12 +108,28 @@ const ProviderConfig: React.FC = () => {
       </FormControl>
 
       <FormControl fullWidth sx={{ mb: 2 }}>
-        <InputLabel>Vector DB Provider</InputLabel>
+        <InputLabel sx={{ color: 'grey.300', '&.Mui-focused': { color: 'grey.100' } }}>Vector DB Provider</InputLabel>
         <Select
           name="vectordb_provider"
           value={config.vectordb_provider || ''}
           label="Vector DB Provider"
           onChange={handleChange}
+          sx={{
+            color: 'grey.100',
+            backgroundColor: 'rgba(255,255,255,0.04)',
+            '& .MuiOutlinedInput-notchedOutline': { borderColor: 'rgba(255,255,255,0.2)' },
+            '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: 'rgba(255,255,255,0.35)' },
+            '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: 'primary.main' },
+          }}
+          MenuProps={{
+            PaperProps: {
+              sx: {
+                bgcolor: 'rgba(15,23,42,0.95)',
+                color: 'grey.100',
+                '& .MuiMenuItem-root': { '&.Mui-selected': { bgcolor: 'rgba(59,130,246,0.2)' } },
+              },
+            },
+          }}
         >
           <MenuItem value="chroma">Chroma</MenuItem>
           <MenuItem value="pinecone">Pinecone</MenuItem>

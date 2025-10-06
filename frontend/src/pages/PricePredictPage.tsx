@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { apiService, PredictionInputApi, PredictionOutputApi } from '../services/api';
+import { apiService, PredictionInputApi, PredictionOutputApi, PredictionHistoryItem } from '../services/api';
 
 interface PredictionRequest {
   // UI fields we collect; will be mapped to model features
@@ -29,6 +29,7 @@ const PricePredictPage: React.FC = () => {
   });
   
   const [prediction, setPrediction] = useState<PredictionResponse | null>(null);
+  const [history, setHistory] = useState<PredictionHistoryItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [availableFeatures] = useState([
@@ -74,6 +75,8 @@ const PricePredictPage: React.FC = () => {
       const payload: PredictionInputApi = mapUiToPredictionPayload(predictionRequest);
       const res: PredictionOutputApi = await apiService.predictPrice(payload);
       setPrediction({ predictedPrice: res.price });
+      // refresh history after new prediction
+      loadHistory();
     } catch (err: any) {
       console.error('Prediction error:', err);
       setError('Failed to get price prediction. Please try again.');
@@ -81,6 +84,19 @@ const PricePredictPage: React.FC = () => {
       setLoading(false);
     }
   };
+
+  const loadHistory = async () => {
+    try {
+      const items = await apiService.listPredictions();
+      setHistory(items);
+    } catch (e) {
+      console.error('Failed to load predictions history', e);
+    }
+  };
+
+  useEffect(() => {
+    loadHistory();
+  }, []);
 
   // Map UI model to backend expected numerical features
   const mapUiToPredictionPayload = (req: PredictionRequest): PredictionInputApi => {
@@ -176,6 +192,19 @@ const PricePredictPage: React.FC = () => {
       maximumFractionDigits: 0,
     }).format(price);
   };
+
+  const InfoPill: React.FC<{ label: string; value: number | string | undefined }> = ({ label, value }) => (
+    <div className="px-2 py-1 rounded bg-slate-800/50 border border-slate-700/50 flex items-center justify-between">
+      <span className="text-gray-400">{label}</span>
+      <span className="font-medium text-gray-200 ml-2">{value ?? '-'}</span>
+    </div>
+  );
+
+  const Tag: React.FC<{ text: string }> = ({ text }) => (
+    <span className="text-[11px] px-2 py-1 rounded-full bg-slate-800/60 border border-slate-700/60 text-gray-200">
+      {text}
+    </span>
+  );
 
   return (
     <div className="max-w-4xl mx-auto space-y-6 animate-fade-in-up">
@@ -366,6 +395,60 @@ const PricePredictPage: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* Predictions History */}
+      <div className="space-y-4">
+        <div className="flex items-center space-x-3">
+          <div className="w-8 h-8 bg-teal-500 rounded-lg grid place-items-center">
+            <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3M5 11h14M5 19h14M5 15h14" />
+            </svg>
+          </div>
+          <h3 className="text-2xl font-semibold">Recent Predictions</h3>
+        </div>
+        {history.length === 0 ? (
+          <div className="card glass p-6 text-gray-300">No predictions yet.</div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+            {history.map((item) => (
+              <div key={item._id} className="card glass p-5 border border-slate-700/50 hover-lift">
+                <div className="flex items-start justify-between">
+                  <div>
+                    <div className="text-sm text-gray-400">{new Date(item.created_at).toLocaleString()}</div>
+                    <div className="text-2xl font-bold gradient-text mt-1">
+                      {formatPrice(item.predicted_price)}
+                    </div>
+                  </div>
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 grid place-items-center">
+                    <svg className="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M3 13h18l-1.5-3.75a4 4 0 0 0-3.7-2.5H8.2a4 4 0 0 0-3.7 2.5L3 13z" />
+                    </svg>
+                  </div>
+                </div>
+                <div className="mt-4 grid grid-cols-2 gap-2 text-xs text-gray-300">
+                  <InfoPill label="Veh. Age" value={item.Vehicle_Age} />
+                  <InfoPill label="HP" value={item.hp} />
+                  <InfoPill label="Eng. cc" value={item.engine_displacement} />
+                  <InfoPill label="MPY" value={item.Mileage_per_Year} />
+                  <InfoPill label="Brand" value={item.brand} />
+                  <InfoPill label="Fuel" value={item.fuel_type} />
+                  <InfoPill label="Trans" value={item.transmission} />
+                  <InfoPill label="V-Engine" value={item.is_v_engine} />
+                </div>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {item.Milage_Very_High ? <Tag text="Very High Mileage" /> : null}
+                  {item.Milage_High ? <Tag text="High Mileage" /> : null}
+                  {item.Milage_Medium ? <Tag text="Medium Mileage" /> : null}
+                  {item.Age_Very_Old ? <Tag text="Very Old" /> : null}
+                  {item.Age_Old ? <Tag text="Old" /> : null}
+                  {item.Age_Mid ? <Tag text="Mid Age" /> : null}
+                  {item.clean_title ? <Tag text="Clean Title" /> : null}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 };

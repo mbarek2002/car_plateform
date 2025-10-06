@@ -1,7 +1,7 @@
 import PyPDF2
 from typing import List
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from config.settings import settings
+from src.core.config import settings
 
 class PDFService:
     def __init__(self):

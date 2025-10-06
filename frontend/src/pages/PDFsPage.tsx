@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { apiService, PDFInfo } from '../services/api';
-import { Box, Typography, Paper, List, ListItem, ListItemText, IconButton, CircularProgress, Tooltip } from '@mui/material';
+import { Box, Typography, Paper, List, ListItem, ListItemText, IconButton, CircularProgress, Tooltip, Button, Alert } from '@mui/material';
+import UploadFileIcon from '@mui/icons-material/UploadFile';
 import DeleteIcon from '@mui/icons-material/Delete';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 
@@ -8,6 +9,9 @@ export default function PDFsPage() {
   const [items, setItems] = useState<PDFInfo[]>([]);
   const [loading, setLoading] = useState(false);
   const [info, setInfo] = useState<PDFInfo | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const [uploadSuccess, setUploadSuccess] = useState<string | null>(null);
 
   const refresh = async () => {
     setLoading(true);
@@ -33,9 +37,59 @@ export default function PDFsPage() {
     setInfo(d);
   };
 
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const inputEl = event.currentTarget; // capture before async awaits
+    const files = inputEl.files;
+    if (!files || files.length === 0) return;
+
+    const file = files[0];
+    setUploading(true);
+    setUploadError(null);
+    setUploadSuccess(null);
+
+    try {
+      await apiService.uploadPDF(file);
+      setUploadSuccess(`Successfully uploaded ${file.name}`);
+      await refresh();
+      setTimeout(() => setUploadSuccess(null), 3000);
+    } catch (e) {
+      console.error('Failed to upload global PDF', e);
+      setUploadError('Failed to upload PDF');
+    } finally {
+      setUploading(false);
+      // reset input value so same file can be uploaded again if desired
+      if (inputEl) inputEl.value = '';
+    }
+  };
+
   return (
     <Box>
       <Typography variant="h5" gutterBottom>Global PDFs</Typography>
+
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+        <Typography variant="subtitle1" color="text.secondary">Upload a PDF visible to all conversations</Typography>
+        <Button
+          variant="contained"
+          component="label"
+          startIcon={<UploadFileIcon />}
+          disabled={uploading}
+        >
+          {uploading ? 'Uploading...' : 'Upload Global PDF'}
+          <input
+            type="file"
+            hidden
+            accept="application/pdf"
+            onChange={handleFileUpload}
+          />
+        </Button>
+      </Box>
+
+      {uploadError && (
+        <Alert severity="error" sx={{ mb: 2 }}>{uploadError}</Alert>
+      )}
+      {uploadSuccess && (
+        <Alert severity="success" sx={{ mb: 2 }}>{uploadSuccess}</Alert>
+      )}
       <Paper variant="outlined">
         {loading ? (
           <Box sx={{ p: 2, display: 'flex', justifyContent: 'center' }}>

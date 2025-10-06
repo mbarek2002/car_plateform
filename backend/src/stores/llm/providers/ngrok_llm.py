@@ -4,7 +4,7 @@ from src.stores.llm.llm_interface import LLMInterface
 class NgrokLLM(LLMInterface):
     def __init__(self, 
                 #  api_key: str = None,
-                 ngrok_url: str = "https://03bb4920c870.ngrok-free.app"):
+                 ngrok_url: str = "https://667dea226da7.ngrok-free.app"):
         """
         NgrokLLM connects to a remote LLM served via ngrok.
 

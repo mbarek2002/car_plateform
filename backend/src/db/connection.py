@@ -1,6 +1,6 @@
 from pymongo import MongoClient
 from typing import Generator
-from config.settings import settings
+from src.core.config import settings
 
 
 client = MongoClient(settings.MONGODB_URI)

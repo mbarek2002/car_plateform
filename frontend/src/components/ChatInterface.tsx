@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { apiService } from '../services/api';
+import { apiService, MessageResponseApi } from '../services/api';
 
 interface Message {
   id: string;
@@ -24,6 +24,25 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ conversationId, mode = 'c
     setMessages([]);
     setError(null);
     setInputText('');
+
+    const loadHistory = async () => {
+      if (!conversationId) return;
+      try {
+        const history: MessageResponseApi[] = await apiService.listMessages(conversationId, 100);
+        const mapped: Message[] = history.map((m, idx) => ({
+          id: `${m.created_at}-${idx}`,
+          text: m.content,
+          isUser: m.role === 'user',
+          timestamp: new Date(m.created_at)
+        }));
+        setMessages(mapped);
+      } catch (e) {
+        // non-blocking
+        console.error('Failed to load conversation history', e);
+      }
+    };
+
+    loadHistory();
   }, [conversationId]);
 
   useEffect(() => {

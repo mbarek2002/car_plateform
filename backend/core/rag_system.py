@@ -8,7 +8,7 @@ from src.stores.vectordb.vectordb_factory import VectorDBFactory
 from database.mongodb_manager import MongoDBManager
 from src.services.pdf_service import PDFService
 from src.services.conversation_service import ConversationService
-from config.settings import settings
+from src.core.config import settings
 
 class RAGSystem:
     def __init__(self, llm_provider: str = None, embedding_provider: str = None, 
@@ -42,6 +42,7 @@ class RAGSystem:
         # Extract and process text
         text = self.pdf_service.extract_text(pdf_path)
         chunks = self.pdf_service.split_text(text)
+
         # Generate embeddings
         embeddings = self.embedding.embed(chunks)
         
@@ -76,14 +77,13 @@ class RAGSystem:
         filename = os.path.basename(pdf_path)
 
         self.db_manager.save_pdf(pdf_id, filename, content, conversation_id)        
-        
+
         # Prepare metadata
         metadata = [
-            {"source": filename, "pdf_id": pdf_id, "conversation_id": conversation_id}
+            {"source": filename, "pdf_id": pdf_id, "conversation_id": conversation_id if conversation_id!=None else "" }
             for _ in chunks
         ]
         ids = [f"{pdf_id}_chunk_{i}" for i in range(len(chunks))]
-        
         # Store in vector database
         self.vectordb.add_documents(chunks, embeddings, metadata, ids)
         
@@ -101,17 +101,17 @@ class RAGSystem:
         results = self.vectordb.search(query_embedding, top_k)
         print("herrre")
         
-        print(f"Found {len(results)} results, top score = {results[0]['score']:.3f}")
+        print(f"Found {len(results)} results")
         
         for r in results:
             print(r['metadata'])
         # Filter by conversation if specified
         if conversation_id:
-            results = [r for r in results 
+            results = [r for r in results
                       if r['metadata'].get('conversation_id') == conversation_id]
         
         print("afterr filtering")
-        print(f"Found {len(results)} results, top score = {results[0]['score']:.3f}")
+        print(f"Found {len(results)} results")
 
         # Build context
         context = "\n\n".join([r['text'] for r in results])

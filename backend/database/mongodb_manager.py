@@ -2,7 +2,7 @@ from pymongo import MongoClient
 from datetime import datetime
 from typing import List, Dict, Optional
 from bson import Binary
-from config.settings import settings
+from src.core.config import settings
 from typing import Dict, Optional , List
 
 class MongoDBManager:
@@ -93,4 +93,3 @@ class MongoDBManager:
         
         result = self.chunks.insert_many(docs)
         return [str(_id) for _id in result.inserted_ids]
-    
