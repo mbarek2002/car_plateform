@@ -1,13 +1,14 @@
 from typing import List
 from fastapi import APIRouter, Depends, HTTPException, Query
 from src.schemas.conversation_schema import ConversationResponse, ConversationCreate
+from src.schemas.message_schema import MessageResponse , MessageCreate
 from src.services.conversation_service import ConversationService
 from core.rag_system import RAGSystem
 router = APIRouter(prefix="/conversations", tags=["conversations"])
 
-rag_sytem = RAGSystem()
+rag_system = RAGSystem()
 
-@router.post("/conversations", response_model=ConversationResponse, tags=["Conversations"])
+@router.post("/", response_model=ConversationResponse)
 async def create_conversation(conversation: ConversationCreate , rag_system):
     """Create a new conversation"""
     try:
@@ -21,7 +22,7 @@ async def create_conversation(conversation: ConversationCreate , rag_system):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@router.get("/conversations", response_model=List[ConversationResponse], tags=["Conversations"])
+@router.get("/", response_model=List[ConversationResponse])
 async def list_conversations():
     """List all conversations"""
     try:
@@ -37,7 +38,7 @@ async def list_conversations():
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@router.get("/conversations/{conversation_id}", response_model=ConversationResponse, tags=["Conversations"])
+@router.get("/{conversation_id}", response_model=ConversationResponse)
 async def get_conversation(conversation_id: str):
     """Get a specific conversation"""
     try:
@@ -54,7 +55,7 @@ async def get_conversation(conversation_id: str):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@router.delete("/conversations/{conversation_id}", tags=["Conversations"])
+@router.delete("/{conversation_id}")
 async def delete_conversation(conversation_id: str):
     """Delete a conversation and its associated PDFs"""
     try:
@@ -63,3 +64,30 @@ async def delete_conversation(conversation_id: str):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+
+@app.get("/conversations/{conversation_id}/messages", response_model=List[MessageResponse], tags=["Conversations"])
+async def list_messages(conversation_id: str, limit: int = 20):
+    try:
+        msgs = rag_system.conversation_service.list_messages(conversation_id, limit=limit, ascending=True)
+        return [
+            MessageResponse(
+                conversation_id=m["conversation_id"],
+                role=m["role"],
+                content=m["content"],
+                created_at=m["created_at"]
+            ) for m in msgs
+        ]
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.post("/{conversation_id}/messages")
+async def add_message(conversation_id: str, body: MessageCreate):
+    try:
+        if body.conversation_id != conversation_id:
+            raise HTTPException(status_code=400, detail="conversation_id mismatch")
+        rag_system.conversation_service.add_message(conversation_id, body.role, body.content)
+        return {"message": "Message saved"}
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
