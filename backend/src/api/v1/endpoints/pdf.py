@@ -48,7 +48,7 @@ async def upload_pdf(
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@router.get("/pdfs/conversation/{conversation_id}", response_model=List[PDFInfo])
+@router.get("/conversation/{conversation_id}", response_model=List[PDFInfo])
 async def get_conversation_pdfs(conversation_id: str):
     """Get all PDFs for a specific conversation"""
     try:
