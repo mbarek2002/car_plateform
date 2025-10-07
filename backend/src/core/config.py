@@ -30,5 +30,10 @@ class Settings:
     CHUNK_SIZE = 1000
     CHUNK_OVERLAP = 200
 
+    # user security
+    SECRET_KEY = os.getenv("SECRET_KEY", "ihebmbarek99360644")
+    ALGORITHM = "HS256"
+    ACCESS_TOKEN_EXPIRE_MINUTES = 30
+
 settings = Settings()
 
