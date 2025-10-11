@@ -15,6 +15,7 @@ from src.schemas import (
 from src.services.prediction_service import PredictionService
 from src.db.connection import get_database
 
+from src.api.v1.router import router
 
 # Initialize FastAPI
 app = FastAPI(
@@ -22,6 +23,8 @@ app = FastAPI(
     description="RAG system with factory pattern for LLM, Embeddings, and Vector DB",
     version="1.0.0"
 )
+
+app.include_router(router)
 
 # CORS middleware
 app.add_middleware(

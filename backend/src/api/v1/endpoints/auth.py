@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from src.schemas.user_schema import UserCreate, UserLogin, UserResponse
-from services.auth import AuthService
+from src.services.auth import AuthService
 
 router = APIRouter( prefix = "/auth" , tags=['auth'] )
 

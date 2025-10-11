@@ -15,7 +15,7 @@ class UserRepository:
         return None
 
     @classmethod
-    def get_by_email(self , email:str , hashed_password:str):
+    def create(self , email:str , hashed_password:str):
         result = self.collection.insert_one({
             "email":email,
             "hashed_password":hashed_password

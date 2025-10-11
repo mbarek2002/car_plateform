@@ -26,7 +26,7 @@ def create_access_token(data:dict):
 class AuthService :
     @staticmethod
     def signup(user  : UserCreate):
-        existing_user = UserRepository.get_by_email(user.email)
+        existing_user = UserRepository.get_by_email(email=user.email)
         if existing_user :
             raise ValueError("Email already registred")
         hashed_password = hash_password(user.password)
