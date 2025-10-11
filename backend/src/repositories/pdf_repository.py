@@ -7,27 +7,34 @@ class PdfRepository:
     def __init__(self, db: Database):
         self.collection = db["pdfs"]
 
-    def save_pdf(self, pdf_id: str, filename: str, content: bytes, 
-                 conversation_id: Optional[str] = None) -> str:
+    def create(self, pdf_id: str, filename: str, content: bytes, 
+               conversation_id: Optional[str] = None) -> str:
         doc = {
             "pdf_id": pdf_id,
             "filename": filename,
             "content": Binary(content),
-            "conversation_id": conversation_id if conversation_id!="" else None,
+            "conversation_id": conversation_id,
             "uploaded_at": datetime.utcnow()
         }
-        result = self.pdfs.insert_one(doc)
+        result = self.collection.insert_one(doc)
         return str(result.inserted_id)
     
-    def get_pdf(self, pdf_id: str) -> Optional[Dict]:
-        return self.pdfs.find_one({"pdf_id": pdf_id})
+    def find_by_id(self, pdf_id: str) -> Optional[Dict]:
+        return self.collection.find_one({"pdf_id": pdf_id})
     
-    def get_pdfs_by_conversation(self, conversation_id: str) -> List[Dict]:
-        return list(self.pdfs.find({"conversation_id": conversation_id}))
+    def find_by_conversation(self, conversation_id: str) -> List[Dict]:
+        return list(self.collection.find({"conversation_id": conversation_id}))
     
-    def get_all_global_pdfs(self) -> List[Dict]:
-        return list(self.pdfs.find({"conversation_id": None}))
+    def find_global_pdfs(self) -> List[Dict]:
+        return list(self.collection.find({"conversation_id": None}))
     
-    def delete_pdf(self, pdf_id: str):
-        self.pdfs.delete_one({"pdf_id": pdf_id})
-        
+    def delete(self, pdf_id: str) -> int:
+        result = self.collection.delete_one({"pdf_id": pdf_id})
+        return result.deleted_count
+    
+    def delete_by_conversation(self, conversation_id: str) -> int:
+        result = self.collection.delete_many({"conversation_id": conversation_id})
+        return result.deleted_count
+    
+    def count_all(self) -> int:
+        return self.collection.count_documents({})

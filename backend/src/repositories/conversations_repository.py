@@ -6,21 +6,24 @@ class ConversationRepository:
     def __init__(self, db: Database):
         self.collection = db["conversations"]
 
-    def create_conversation(self, conversation_id: str, title: str) -> str:
+    def create(self, conversation_id: str, title: str) -> str:
         doc = {
             "conversation_id": conversation_id,
             "title": title,
             "created_at": datetime.utcnow()
         }
-        result = self.conversations.insert_one(doc)
+        result = self.collection.insert_one(doc)
         return str(result.inserted_id)
     
-    def get_conversation(self, conversation_id: str) -> Optional[Dict]:
-        return self.conversations.find_one({"conversation_id": conversation_id})
+    def find_by_id(self, conversation_id: str) -> Optional[Dict]:
+        return self.collection.find_one({"conversation_id": conversation_id})
     
-    def get_all_conversations(self) -> List[Dict]:
-        return list(self.conversations.find())
+    def find_all(self) -> List[Dict]:
+        return list(self.collection.find().sort("created_at", -1))
     
-    def delete_conversation(self, conversation_id: str):
-        self.conversations.delete_one({"conversation_id": conversation_id})
-        self.pdfs.delete_many({"conversation_id": conversation_id})
+    def delete(self, conversation_id: str) -> int:
+        result = self.collection.delete_one({"conversation_id": conversation_id})
+        return result.deleted_count
+    
+    def exists(self, conversation_id: str) -> bool:
+        return self.collection.count_documents({"conversation_id": conversation_id}) > 0

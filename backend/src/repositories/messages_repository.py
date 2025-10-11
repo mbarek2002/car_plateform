@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Optional , Dict
+from typing import Optional , Dict , List
 from pymongo.database import Database
 
 class MessagesRpository :
@@ -16,13 +16,23 @@ class MessagesRpository :
             "created_at":datetime.utcnow()
          }
 
-        result = self.messages.insert_one(doc)
+        result = self.collection.insert_one(doc)
         return str(result.inserted_id)
-  
-    def get_messages(self , conversation_id : str , limit : int=20 ,  ascending : bool=True)->List:
-        sort_order = 1 if ascending else -1
-        cursor = self.messages.find({"conversation_id":conversation_id}).sort("created_at",sort_order).limit(limit)
-        return list(cursor)
 
-    def delete_messages(self,conversation_id:str):
-        self.messages.delete_many({"conversation_id":conversation_id})
+    def find_by_conversation(self , conversation_id:str , limit:int =20 , 
+                             ascending : bool =True ) -> List[Dict] : 
+        sort_order = 1 if ascending else 2
+        cursor = self.collection.find(
+            {"conversation_id":conversation_id}
+        ).sort("created_at",sort_order).limit(limit)
+        return list(cursor)
+    
+    def delete_by_conversation(self,conversation_id:str):
+        result = self.collection.delete_many({"conversation_id":conversation_id})
+        return result.deleted_count
+
+    def count_by_conversation(self,conversation_id:str):
+        result = self.collection.count_documents({"conversation_id":conversation_id})
+        return result.deleted_count
+
+    
