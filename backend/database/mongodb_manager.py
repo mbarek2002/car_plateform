@@ -1,4 +1,5 @@
-from pymongo import MongoClient
+from pymongo import MongoClient 
+from pymongo.database import Database
 from datetime import datetime
 from typing import List, Dict, Optional
 from bson import Binary
@@ -6,7 +7,7 @@ from src.core.config import settings
 from typing import Dict, Optional , List
 
 class MongoDBManager:
-    def __init__(self):
+    def __init__(self): 
         self.client = MongoClient(settings.MONGODB_URI)
         self.db = self.client[settings.MONGODB_DB_NAME]
         self.pdfs = self.db['pdfs']

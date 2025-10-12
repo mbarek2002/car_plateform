@@ -3,7 +3,7 @@ from datetime import datetime
 from typing import List , Dict , Optional
 from bson import Binary
 
-class PdfRepository:
+class PDFRepository:
     def __init__(self, db: Database):
         self.collection = db["pdfs"]
 

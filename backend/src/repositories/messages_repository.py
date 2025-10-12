@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Optional , Dict , List
 from pymongo.database import Database
 
-class MessagesRpository :
+class MessagesRepository :
 
     def __init__(self , db:Database):
         self.collection = db['messages']
