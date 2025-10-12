@@ -26,7 +26,7 @@ class PDFRepository:
         return list(self.collection.find({"conversation_id": conversation_id}))
     
     def find_global_pdfs(self) -> List[Dict]:
-        return list(self.collection.find({"conversation_id": None}))
+        return list(self.collection.find({"conversation_id": ""}))
     
     def delete(self, pdf_id: str) -> int:
         result = self.collection.delete_one({"pdf_id": pdf_id})

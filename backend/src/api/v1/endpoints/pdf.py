@@ -160,7 +160,7 @@ async def delete_pdf(pdf_id: str , db=Depends(get_database)):
     """Delete a specific PDF"""
     try:
         service = RAGService(db)
-        service.db_manager.delete_pdf(pdf_id)
+        service.delete_pdf(pdf_id)
         return {"message": "PDF deleted successfully"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

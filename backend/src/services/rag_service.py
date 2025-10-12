@@ -26,6 +26,10 @@ class RAGService:
         llm_prov = llm_provider or settings.LLM_PROVIDER
         emb_prov = embedding_provider or settings.EMBEDDING_PROVIDER
         vec_prov = vectordb_provider or settings.VECTORDB_PROVIDER
+
+        print(llm_prov)
+        print(emb_prov)
+        print(vec_prov)
         
         self.llm = LLMFactory.create(
             llm_prov, 
@@ -91,7 +95,7 @@ class RAGService:
         # Filter by conversation if specified
         if conversation_id:
             results = [r for r in results 
-                      if r['metadata'].get('conversation_id') == conversation_id]
+                      if r['metadata'].get('conversation_id') == conversation_id or r['metadata'].get('conversation_id') == ""]
         
         # Build context
         context = "\n\n".join([r['text'] for r in results])
@@ -113,6 +117,8 @@ class RAGService:
             Provide a short, accurate, and helpful answer in one paragraph. 
             If it's a legal question, mention what driving law or rule applies.
         """
+        # print(prompt)
+        # return ""
         
         # Generate response
         return self.llm.generate(prompt)

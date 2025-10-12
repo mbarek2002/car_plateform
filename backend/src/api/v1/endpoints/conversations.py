@@ -28,7 +28,7 @@ async def create_conversation(conversation : ConversationCreate , db=Depends(get
 async def list_conversations(db=Depends(get_database)):
     """List all conversations"""
     try:
-        service = ConversationService()
+        service = ConversationService(db)
         conversations = service.list_all()
         return [
             ConversationResponse(
