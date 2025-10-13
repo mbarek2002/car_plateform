@@ -1,24 +1,27 @@
-import PyPDF2
-from typing import List
-from langchain.text_splitter import RecursiveCharacterTextSplitter
-from src.core.config import settings
+from typing import List, Dict, Optional
+from datetime import datetime
+from src.repositories.conversations_repository import ConversationRepository
+from src.repositories.messages_repository import MessagesRepository
+from src.repositories.pdf_repository import PDFRepository
 
-# settings = Settings()
 
-class PDFService:
-    def __init__(self):
-        self.text_splitter = RecursiveCharacterTextSplitter(
-            chunk_size=settings.CHUNK_SIZE,
-            chunk_overlap=settings.CHUNK_OVERLAP
-        )
+class PdfService:
+    def __init__(self, db):
+        self.pdf_repo = PDFRepository(db)
+
+    def get_pdf(self, pdf_id: str) -> Optional[Dict]:
+        return self.pdf_repo.find_by_id(pdf_id=pdf_id)
+
+    def get_conversation_pdfs(self, conversation_id: str) -> List:
+        """Get all PDFs for a conversation"""
+        return self.pdf_repo.find_by_conversation(conversation_id)
     
-    def extract_text(self, pdf_path: str) -> str:
-        text = ""
-        with open(pdf_path, 'rb') as file:
-            pdf_reader = PyPDF2.PdfReader(file)
-            for page in pdf_reader.pages:
-                text += page.extract_text()
-        return text
+    def get_global_pdfs(self) -> List:
+        """Get all global PDFs"""
+        return self.pdf_repo.find_global_pdfs()
     
-    def split_text(self, text: str) -> List[str]:
-        return self.text_splitter.split_text(text)
+    def delete_pdf(self, pdf_id: str):
+        """Delete a PDF"""
+        self.pdf_repo.delete(pdf_id)
+        # TODO: Also delete from vector DB
+    

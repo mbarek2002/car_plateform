@@ -9,7 +9,7 @@ from src.repositories.chunk_repository import ChunkRepository
 from src.stores.llm.llm_factory import LLMFactory
 from src.stores.embedding.embedding_factory import EmbeddingFactory
 from src.stores.vectordb.vectordb_factory import VectorDBFactory
-from src.services.pdf_service import PDFService
+from src.core.pdf_service import PDFService
 from src.core.config import settings
 
 
@@ -46,7 +46,6 @@ class RAGService:
         
         # Initialize PDF service
         self.pdf_service = PDFService()
-
 
     def upload_pdf(self, pdf_path: str, conversation_id: Optional[str] = None) -> str:
         """Process and upload a PDF file"""
@@ -178,18 +177,18 @@ class RAGService:
         """
         return prompt
     
-    def get_conversation_pdfs(self, conversation_id: str) -> List:
-        """Get all PDFs for a conversation"""
-        return self.pdf_repo.find_by_conversation(conversation_id)
+    # def get_conversation_pdfs(self, conversation_id: str) -> List:
+    #     """Get all PDFs for a conversation"""
+    #     return self.pdf_repo.find_by_conversation(conversation_id)
     
-    def get_global_pdfs(self) -> List:
-        """Get all global PDFs"""
-        return self.pdf_repo.find_global_pdfs()
+    # def get_global_pdfs(self) -> List:
+    #     """Get all global PDFs"""
+    #     return self.pdf_repo.find_global_pdfs()
     
-    def delete_pdf(self, pdf_id: str):
-        """Delete a PDF"""
-        self.pdf_repo.delete(pdf_id)
-        # TODO: Also delete from vector DB
+    # def delete_pdf(self, pdf_id: str):
+    #     """Delete a PDF"""
+    #     self.pdf_repo.delete(pdf_id)
+    #     # TODO: Also delete from vector DB
     
     def get_statistics(self) -> dict:
         """Get system statistics"""

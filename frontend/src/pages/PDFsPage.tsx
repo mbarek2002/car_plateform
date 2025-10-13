@@ -12,12 +12,19 @@ export default function PDFsPage() {
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [uploadSuccess, setUploadSuccess] = useState<string | null>(null);
+  const [fetchError, setFetchError] = useState<string | null>(null);
 
   const refresh = async () => {
     setLoading(true);
+    setFetchError(null);
     try {
       const data = await apiService.getGlobalPdfs();
       setItems(data);
+    } catch (e: any) {
+      console.error('Failed to fetch global PDFs', e);
+      const message = e?.response?.data?.detail || e?.message || 'Failed to load global PDFs';
+      setFetchError(message);
+      setItems([]);
     } finally {
       setLoading(false);
     }
@@ -28,8 +35,13 @@ export default function PDFsPage() {
   }, []);
 
   const onDelete = async (pdfId: string) => {
-    await apiService.deletePdf(pdfId);
-    await refresh();
+    try {
+      await apiService.deletePdf(pdfId);
+      await refresh();
+    } catch (e: any) {
+      console.error('Failed to delete PDF', e);
+      setUploadError(e?.response?.data?.detail || 'Delete failed');
+    }
   };
 
   const onInfo = async (pdfId: string) => {
@@ -52,9 +64,10 @@ export default function PDFsPage() {
       setUploadSuccess(`Successfully uploaded ${file.name}`);
       await refresh();
       setTimeout(() => setUploadSuccess(null), 3000);
-    } catch (e) {
+    } catch (e: any) {
       console.error('Failed to upload global PDF', e);
-      setUploadError('Failed to upload PDF');
+      const message = e?.response?.data?.detail || e?.message || 'Failed to upload PDF';
+      setUploadError(message);
     } finally {
       setUploading(false);
       // reset input value so same file can be uploaded again if desired
@@ -86,6 +99,9 @@ export default function PDFsPage() {
 
       {uploadError && (
         <Alert severity="error" sx={{ mb: 2 }}>{uploadError}</Alert>
+      )}
+      {fetchError && (
+        <Alert severity="error" sx={{ mb: 2 }}>{fetchError}</Alert>
       )}
       {uploadSuccess && (
         <Alert severity="success" sx={{ mb: 2 }}>{uploadSuccess}</Alert>

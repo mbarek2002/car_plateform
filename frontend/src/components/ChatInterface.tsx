@@ -19,6 +19,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ conversationId, mode = 'c
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const endRef = useRef<HTMLDivElement | null>(null);
+  const shouldAutoScrollRef = useRef<boolean>(false);
 
   useEffect(() => {
     setMessages([]);
@@ -35,6 +36,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ conversationId, mode = 'c
           isUser: m.role === 'user',
           timestamp: new Date(m.created_at)
         }));
+        shouldAutoScrollRef.current = false; // do not scroll on initial load
         setMessages(mapped);
       } catch (e) {
         // non-blocking
@@ -46,7 +48,10 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ conversationId, mode = 'c
   }, [conversationId]);
 
   useEffect(() => {
-    endRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (shouldAutoScrollRef.current) {
+      endRef.current?.scrollIntoView({ behavior: 'smooth' });
+      shouldAutoScrollRef.current = false;
+    }
   }, [messages, loading]);
 
   const handleSendMessage = async () => {
@@ -60,6 +65,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ conversationId, mode = 'c
     };
 
     const questionText = inputText;
+    shouldAutoScrollRef.current = true;
     setMessages(prev => [...prev, userMessage]);
     setInputText('');
     setLoading(true);
@@ -83,10 +89,11 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ conversationId, mode = 'c
         timestamp: new Date()
       };
 
+      shouldAutoScrollRef.current = true;
       setMessages(prev => [...prev, botMessage]);
     } catch (err: any) {
       console.error(err);
-      let errorMessage = 'Failed to get response from the RAG system';
+      let errorMessage = 'Request failed. Please try again.';
       if (err instanceof Error) {
         if (err.message.includes('timeout')) {
           errorMessage = 'Request timed out. Please try again.';
@@ -97,10 +104,11 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ conversationId, mode = 'c
       setError(errorMessage);
       const errorBotMessage: Message = {
         id: (Date.now() + 2).toString(),
-        text: `Sorry, I encountered an error: ${errorMessage}`,
+        text: `There was a problem: ${errorMessage}`,
         isUser: false,
         timestamp: new Date()
       };
+      shouldAutoScrollRef.current = true;
       setMessages(prev => [...prev, errorBotMessage]);
     } finally {
       setLoading(false);
@@ -118,17 +126,17 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ conversationId, mode = 'c
     <div className="flex flex-col h-full">
       <div className="flex-1 overflow-y-auto space-y-4 min-h-[320px] max-h-[60vh] p-4 card">
         {messages.length === 0 ? (
-          <div className="h-full grid place-items-center text-gray-400 text-center">
+          <div className="h-full grid place-items-center text-center">
             <div className="space-y-3">
               <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto animate-pulse-slow">
                 <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                 </svg>
               </div>
-              <p className="text-sm">
+              <p className="text-sm text-blue-600 dark:text-gray-300">
                 {mode === 'prediction' 
-                  ? 'Ask about car prices, market trends, or vehicle valuations' 
-                  : 'Ask a question about your documents'
+                  ? 'Ask about prices or market information.' 
+                  : 'Type a message to begin.'
                 }
               </p>
             </div>
@@ -144,7 +152,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ conversationId, mode = 'c
                 className={`px-4 py-3 rounded-2xl max-w-[80%] shadow-lg text-sm whitespace-pre-wrap hover-lift ${
                   message.isUser
                     ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-br-md'
-                    : 'bg-slate-700/50 text-gray-100 border border-slate-600/50 rounded-bl-md'
+                    : 'bg-zinc-100 text-zinc-800 border border-zinc-200 rounded-bl-md dark:bg-slate-700/50 dark:text-gray-100 dark:border-slate-600/50'
                 }`}
               >
                 {message.text}
@@ -154,9 +162,9 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ conversationId, mode = 'c
         )}
         {loading && (
           <div className="flex justify-center mt-4">
-            <div className="flex items-center space-x-2 bg-slate-800/50 px-4 py-2 rounded-full">
+            <div className="flex items-center space-x-2 bg-zinc-100 dark:bg-slate-800/50 px-4 py-2 rounded-full">
               <div className="spinner" />
-              <span className="text-sm text-gray-300">AI is thinking...</span>
+              <span className="text-sm text-zinc-700 dark:text-gray-300">Working...</span>
             </div>
           </div>
         )}

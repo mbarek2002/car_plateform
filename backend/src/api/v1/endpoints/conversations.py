@@ -1,20 +1,26 @@
+from fastapi import APIRouter, Depends, HTTPException
 from typing import List
-from fastapi import APIRouter, Depends, HTTPException, Query
+
 from src.schemas.conversation_schema import ConversationResponse, ConversationCreate
 from src.schemas.message_schema import MessageResponse , MessageCreate
+
 from src.services.conversation_service import ConversationService
-from core.rag_system import RAGSystem
+
 from src.db.mongodb import get_database
+from src.api.deps import get_conversation_service
+
 router = APIRouter(prefix="/conversations", tags=["conversations"])
 
-
 @router.post('' , response_model = ConversationResponse)
-async def create_conversation(conversation : ConversationCreate , db=Depends(get_database)):
+async def create_conversation(
+    conversation : ConversationCreate ,
+      db=Depends(get_database),
+      conversation_service: ConversationService = Depends(get_conversation_service)
+      ):
     """Create a new conversation"""
     try :
-        service = ConversationService(db)
-        conv_id = service.create(conversation.title)
-        conv_data = service.get(conv_id)
+        conv_id = conversation_service.create(conversation.title)
+        conv_data = conversation_service.get(conv_id)
         return ConversationResponse (
             conversation_id = conv_data["conversation_id"],
             title = conv_data["title"],
@@ -25,11 +31,13 @@ async def create_conversation(conversation : ConversationCreate , db=Depends(get
 
 
 @router.get('' , response_model = List[ConversationResponse])
-async def list_conversations(db=Depends(get_database)):
+async def list_conversations(
+    db=Depends(get_database),
+    conversation_service: ConversationService = Depends(get_conversation_service)
+    ):
     """List all conversations"""
     try:
-        service = ConversationService(db)
-        conversations = service.list_all()
+        conversations = conversation_service.list_all()
         return [
             ConversationResponse(
                 conversation_id=conv["conversation_id"],

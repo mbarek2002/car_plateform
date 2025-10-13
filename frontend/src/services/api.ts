@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+const API_V1_URL = `${API_URL}/v1`;
 
 export interface Conversation {
   conversation_id: string;
@@ -19,6 +20,15 @@ export interface ProviderConfig {
   llm_provider?: string | null;
   embedding_provider?: string | null;
   vectordb_provider?: string | null;
+}
+
+export interface CurrentConfigResponse {
+  llm_provider?: string | null;
+  embedding_provider?: string | null;
+  vectordb_provider?: string | null;
+  llm_model?: string | null;
+  embedding_model?: string | null;
+  vectordb_index?: string | null;
 }
 
 export interface QueryResponse {
@@ -85,7 +95,7 @@ export interface PredictionHistoryItem extends PredictionInputApi {
 }
 
 const apiClient = axios.create({
-  baseURL: API_URL,
+  baseURL: API_V1_URL,
   headers: { 'Content-Type': 'application/json' },
   timeout: 30000, // 30 seconds timeout
 });
@@ -125,11 +135,20 @@ const retryRequest = async <T>(
 export const apiService = {
   // Health
   healthCheck: async (): Promise<{ status: string; message: string }> => {
-    const { data } = await apiClient.get('/health');
+    const { data } = await axios.get(`${API_URL}/health`);
     return data;
   },
 
   // Providers config
+  getCurrentProviders: async (): Promise<ProviderConfig> => {
+    const { data } = await apiClient.get('/config/providers');
+    const res = data as CurrentConfigResponse;
+    return {
+      llm_provider: res.llm_provider ?? undefined,
+      embedding_provider: res.embedding_provider ?? undefined,
+      vectordb_provider: res.vectordb_provider ?? undefined,
+    } as ProviderConfig;
+  },
   configureProviders: async (config: ProviderConfig) => {
     const { data } = await apiClient.post('/config/providers', config);
     return data as { message: string; config: ProviderConfig };
@@ -163,7 +182,8 @@ export const apiService = {
   uploadPDF: async (file: File, conversationId?: string) => {
     const formData = new FormData();
     formData.append('file', file);
-    if (conversationId) formData.append('conversation_id', conversationId);
+    // Ensure field is present; send empty string for global uploads
+    formData.append('conversation_id', conversationId ?? '');
 
     const { data } = await apiClient.post('/pdfs/upload', formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
@@ -178,7 +198,8 @@ export const apiService = {
   uploadPDFBatch: async (files: File[], conversationId?: string) => {
     const formData = new FormData();
     files.forEach((f) => formData.append('files', f));
-    if (conversationId) formData.append('conversation_id', conversationId);
+    // Ensure field is present; send empty string for global uploads
+    formData.append('conversation_id', conversationId ?? '');
 
     const { data } = await apiClient.post('/pdfs/upload-batch', formData, {
       headers: { 'Content-Type': 'multipart/form-data' },

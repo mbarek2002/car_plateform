@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Box, FormControl, InputLabel, Select, MenuItem,
   Button, Typography, Alert, SelectChangeEvent
@@ -7,13 +7,32 @@ import { apiService, ProviderConfig as ProviderConfigType } from '../services/ap
 
 const ProviderConfig: React.FC = () => {
   const [config, setConfig] = useState<ProviderConfigType>({
-    llm_provider: 'gemini',
-    embedding_provider: 'gemini',
-    vectordb_provider: 'chroma'
+    llm_provider: '',
+    embedding_provider: '',
+    vectordb_provider: ''
   });
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      try {
+        const current = await apiService.getCurrentProviders();
+        if (mounted) {
+          setConfig({
+            llm_provider: current.llm_provider || '',
+            embedding_provider: current.embedding_provider || '',
+            vectordb_provider: current.vectordb_provider || ''
+          });
+        }
+      } catch (e) {
+        console.error('Failed to load current providers', e);
+      }
+    })();
+    return () => { mounted = false; };
+  }, []);
 
   const handleChange = (event: SelectChangeEvent) => {
     const { name, value } = event.target;
@@ -42,7 +61,7 @@ const ProviderConfig: React.FC = () => {
   return (
     <Box sx={{ maxWidth: 400, mx: 'auto', p: 2 }}>
       <Typography variant="h6" gutterBottom>
-        Configure Providers
+        Settings
       </Typography>
 
       {success && <Alert severity="success" sx={{ mb: 2 }}>{success}</Alert>}
