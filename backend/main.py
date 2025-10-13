@@ -3,9 +3,10 @@ from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 import shutil
 from pathlib import Path
+from src.services.rag_service import RAGService
 
 from src.api.v1.router import router as api_router
-from src.db.mongodb import MongoDB
+from src.db.mongodb import MongoDB , get_database
 
 # Initialize FastAPI
 app = FastAPI(
@@ -30,13 +31,17 @@ app.include_router(api_router)
 UPLOAD_DIR = Path("temp_uploads")
 UPLOAD_DIR.mkdir(exist_ok=True)
 
+from src.core.config import settings
 
 # ==================== STARTUP/SHUTDOWN ====================
 
 @app.on_event("startup")
 async def startup_event():
     """Initialize database connection on startup"""
+    global rag_service 
     mongodb = MongoDB()
+    settings.rag_service = RAGService(db=mongodb.db)
+    # rag_service =   
     print(f"✅ Connected to MongoDB: {mongodb.db.name}")
 
 @app.on_event("shutdown")

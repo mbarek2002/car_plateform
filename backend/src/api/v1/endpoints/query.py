@@ -9,6 +9,7 @@ from core.rag_system import RAGSystem
 from typing import Optional 
 import shutil
 from pathlib import Path
+from src.core.config import settings
 
 router = APIRouter(prefix="/chat", tags=["chat"])
 # rag_system = RAGSystem()
@@ -17,7 +18,9 @@ router = APIRouter(prefix="/chat", tags=["chat"])
 @router.post("/chat", response_model=ChatResponse)
 async def chat(request: ChatRequest , db = Depends(get_database)):
     try:
-        service = RAGService(db)
+
+        # service = RAGService(db)
+        service = settings.rag_service
         result = service.chat(
             conversation_id=request.conversation_id,
             message=request.message,
@@ -38,17 +41,18 @@ async def chat(request: ChatRequest , db = Depends(get_database)):
 @router.post("/query", response_model=QueryResponse)
 async def query_rag(request: QueryRequest , db=Depends(get_database)):
     """Query the RAG system (global or conversation-specific)"""
-    try:
-        service = RAGService(db)
-        answer = service.query(
-            question=request.question,
-            conversation_id=request.conversation_id,
-            top_k=request.top_k
-        )
-        return QueryResponse(
-            answer=answer,
-            conversation_id=request.conversation_id
-        )
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    # try:
+        # service = RAGService(db)
+    service = settings.rag_service
+    answer = service.query(
+        question=request.question,
+        conversation_id=request.conversation_id,
+        top_k=request.top_k
+    )
+    return QueryResponse(
+        answer=answer,
+        conversation_id=request.conversation_id
+    )
+    # except Exception as e:
+    #     raise HTTPException(status_code=500, detail=str(e))
 

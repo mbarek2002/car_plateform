@@ -1,6 +1,10 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException , Depends
 from src.schemas.config_schema import ProviderConfig, CurrentConfigResponse
 from src.core.config import settings
+from src.services.rag_service import RAGService
+from src.db.mongodb import get_database
+from src.core.config import settings
+
 
 router = APIRouter(prefix="/config", tags=["Configuration"])
 
@@ -26,7 +30,9 @@ async def get_current_config():
 
 
 @router.post("/providers", response_model=dict)
-async def configure_providers(config: ProviderConfig):
+async def configure_providers(
+    config: ProviderConfig,
+    db=Depends(get_database)):
     """
     Reconfigure LLM, Embedding, and Vector DB providers.
     Note: This will affect all subsequent requests until server restart.
@@ -39,6 +45,15 @@ async def configure_providers(config: ProviderConfig):
             _current_config["embedding_provider"] = config.embedding_provider
         if config.vectordb_provider:
             _current_config["vectordb_provider"] = config.vectordb_provider
+
+        print(_current_config)
+        settings.rag_service = RAGService(
+            llm_provider=_current_config["llm_provider"],
+            embedding_provider=_current_config["embedding_provider"],
+            vectordb_provider=_current_config["vectordb_provider"],
+            db=db
+        )
+        
         
         return {
             "message": "Providers updated successfully",

@@ -117,7 +117,7 @@ class RAGService:
             Provide a short, accurate, and helpful answer in one paragraph. 
             If it's a legal question, mention what driving law or rule applies.
         """
-        # print(prompt)
+        print(prompt)
         # return ""
         
         # Generate response

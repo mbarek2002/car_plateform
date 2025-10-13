@@ -3,6 +3,8 @@ from typing import List
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from src.core.config import settings
 
+# settings = Settings()
+
 class PDFService:
     def __init__(self):
         self.text_splitter = RecursiveCharacterTextSplitter(

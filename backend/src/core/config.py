@@ -35,5 +35,8 @@ class Settings:
     ALGORITHM = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
+    # rag service
+    rag_service = None
+
 settings = Settings()
 
