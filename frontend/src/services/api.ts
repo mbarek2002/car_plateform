@@ -22,6 +22,26 @@ export interface ProviderConfig {
   vectordb_provider?: string | null;
 }
 
+export interface UserCreate {
+  email: string;
+  password: string;
+}
+
+export interface UserLogin {
+  email: string;
+  password: string;
+}
+
+export interface UserResponse {
+  id: string;
+  email: string;
+}
+
+export interface LoginResponse {
+  access_token: string;
+  token_type: string;
+}
+
 export interface CurrentConfigResponse {
   llm_provider?: string | null;
   embedding_provider?: string | null;
@@ -139,6 +159,17 @@ export const apiService = {
     return data;
   },
 
+  // Auth
+  signup: async (user: UserCreate): Promise<UserResponse> => {
+    const { data } = await apiClient.post('/auth/signup', user);
+    return data as UserResponse;
+  },
+
+  login: async (credentials: UserLogin): Promise<LoginResponse> => {
+    const { data } = await apiClient.post('/auth/login', credentials);
+    return data as LoginResponse;
+  },
+
   // Providers config
   getCurrentProviders: async (): Promise<ProviderConfig> => {
     const { data } = await apiClient.get('/config/providers');
@@ -232,7 +263,7 @@ export const apiService = {
   // Query
   queryRAG: async (question: string, conversationId?: string, topK: number = 3) => {
     return retryRequest(async () => {
-      const { data } = await apiClient.post('/query', {
+      const { data } = await apiClient.post('/chat/query', {
         question,
         conversation_id: conversationId,
         top_k: topK,
@@ -281,7 +312,7 @@ export const apiService = {
 
   listPredictions: async () => {
     return retryRequest(async () => {
-      const { data } = await apiClient.get('/predictions');
+      const { data } = await apiClient.get('/predict/predictions');
       return data as PredictionHistoryItem[];
     });
   },

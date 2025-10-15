@@ -11,6 +11,8 @@ import PDFsPage from './pages/PDFsPage';
 import StatsPage from './pages/StatsPage';
 import HealthPage from './pages/HealthPage';
 import PricePredictPage from './pages/PricePredictPage';
+import LoginPage from './pages/LoginPage';
+import SignupPage from './pages/SignupPage';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import HomePage from './pages/HomePage';
@@ -98,6 +100,8 @@ function AppShell() {
             <Route path="/stats" element={<StatsPage />} />
             <Route path="/health" element={<HealthPage />} />
             <Route path="/settings" element={<ProviderConfig />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/signup" element={<SignupPage />} />
           </Routes>
         </div>
       </main>

@@ -7,14 +7,13 @@ class UserRepository:
     def __init__(self, db: Database):
         self.collection = db["users"]
 
-    @classmethod
     def get_by_email(self , email:str):
         user = self.collection.find_one({"email":email})
+        print(user)
         if user :
             return UserInDB(**user)
         return None
 
-    @classmethod
     def create(self , email:str , hashed_password:str):
         result = self.collection.insert_one({
             "email":email,

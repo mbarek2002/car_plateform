@@ -20,4 +20,4 @@ class UserInDB(BaseModel):
     hashed_password:str
 
     class Config:
-        json_encoders = {ObjectId:str}
+        json_encoders = {ObjectId:str}  

@@ -39,6 +39,8 @@ const Navbar: React.FC = () => {
           <NavItem to="/stats" label="Stats" active={isActive('/stats')} />
           <NavItem to="/health" label="Health" active={isActive('/health')} />
           <NavItem to="/settings" label="Settings" active={isActive('/settings')} />
+          <NavItem to="/login" label="Login" active={isActive('/login')} />
+          <NavItem to="/signup" label="Sign Up" active={isActive('/signup')} />
           <button
             aria-label="Toggle theme"
             className="ml-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors text-zinc-700 hover:bg-zinc-100 dark:text-gray-300 dark:hover:bg-steel/50"
@@ -74,6 +76,8 @@ const Navbar: React.FC = () => {
             <NavItem to="/stats" label="Stats" active={isActive('/stats')} />
             <NavItem to="/health" label="Health" active={isActive('/health')} />
             <NavItem to="/settings" label="Settings" active={isActive('/settings')} />
+            <NavItem to="/login" label="Login" active={isActive('/login')} />
+            <NavItem to="/signup" label="Sign Up" active={isActive('/signup')} />
           </div>
         </div>
       )}
