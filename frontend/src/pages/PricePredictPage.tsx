@@ -371,7 +371,8 @@ const PricePredictPage: React.FC = () => {
                 <h3 className="text-3xl font-bold text-white">Predicted Market Value</h3>
               </div>
               <div className="text-6xl font-bold gradient-text">
-                {formatPrice(prediction.predictedPrice)}
+                {prediction.predictedPrice.toFixed(2)}
+                {/* {formatPrice(prediction.predictedPrice)} */}
               </div>
               <div className="flex items-center justify-center space-x-6 text-sm">
                 <div className="flex items-center space-x-2 bg-slate-800/50 px-4 py-2 rounded-full">
@@ -416,7 +417,9 @@ const PricePredictPage: React.FC = () => {
                   <div>
                     <div className="text-sm text-gray-400">{new Date(item.created_at).toLocaleString()}</div>
                     <div className="text-2xl font-bold gradient-text mt-1">
-                      {formatPrice(item.predicted_price)}
+                      {item.predicted_price.toFixed(2)}
+                {/* {formatPrice(item.predicted_price)} */}
+
                     </div>
                   </div>
                   <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 grid place-items-center">
