@@ -245,7 +245,7 @@ export const apiService = {
       return data as PDFInfo[];
     });
   },
-  getGlobalPdfs: async () => {
+  getGlobalPdfs: async () => {  
     return retryRequest(async () => {
       const { data } = await apiClient.get('/pdfs/global');
       return data as PDFInfo[];
@@ -266,7 +266,7 @@ export const apiService = {
       const { data } = await apiClient.post('/chat/query', {
         question,
         conversation_id: conversationId,
-        top_k: topK,
+        top_k: topK,  
       });
       return data as QueryResponse;
     });
