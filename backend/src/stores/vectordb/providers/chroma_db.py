@@ -25,3 +25,12 @@ class ChromaDB(VectorDBInterface):
             {"text": doc, "metadata": meta, "score": score}
             for doc, meta, score in zip(results['documents'][0], results['metadatas'][0], results['distances'][0])
         ]
+    def delete_by_pdf_id(self, pdf_id: str) -> None:
+        """
+        Delete all vector chunks from Chroma that belong to a specific pdf_id.
+        """
+        try:
+            self.collection.delete(where={"pdf_id": pdf_id})
+            print(f"✅ Successfully deleted all chunks for pdf_id={pdf_id} from ChromaDB.")
+        except Exception as e:
+            print(f"⚠️ Failed to delete chunks for pdf_id={pdf_id}: {e}")

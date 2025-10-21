@@ -21,3 +21,18 @@ class PineconeDB(VectorDBInterface):
             {"text": match['metadata'].get('text', ''), "metadata": match['metadata']}
             for match in results['matches']
         ]
+    
+    def delete(self, pdf_id: str) -> int:
+        result = self.collection.delete_one({"pdf_id": pdf_id})
+
+        if result.deleted_count > 0:
+            try:
+                # delete all vectors that belong to this pdf_id
+                self.vector_db.delete(
+                    filter={"pdf_id": {"$eq": pdf_id}}
+                )
+            except Exception as e:
+                print(f"Error deleting vectors from Pinecone: {e}")
+
+        return result.deleted_count
+

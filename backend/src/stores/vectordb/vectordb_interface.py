@@ -10,3 +10,7 @@ class VectorDBInterface(ABC):
     @abstractmethod
     def search(self, query_embedding: List[float], top_k: int) -> List[Dict]:
         pass
+
+    @abstractmethod
+    def delete_by_pdf_id(self, pdf_id: str) -> None:
+        pass

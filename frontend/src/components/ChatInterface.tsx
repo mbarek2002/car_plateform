@@ -17,6 +17,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ conversationId, mode = 'c
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputText, setInputText] = useState('');
   const [loading, setLoading] = useState(false);
+  const [loadingMessages, setLoadingMessages] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const endRef = useRef<HTMLDivElement | null>(null);
   const shouldAutoScrollRef = useRef<boolean>(false);
@@ -28,6 +29,8 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ conversationId, mode = 'c
 
     const loadHistory = async () => {
       if (!conversationId) return;
+      
+      setLoadingMessages(true);
       try {
         const history: MessageResponseApi[] = await apiService.listMessages(conversationId, 100);
         const mapped: Message[] = history.map((m, idx) => ({
@@ -38,9 +41,13 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ conversationId, mode = 'c
         }));
         shouldAutoScrollRef.current = false; // do not scroll on initial load
         setMessages(mapped);
+        setError(null);
       } catch (e) {
-        // non-blocking
         console.error('Failed to load conversation history', e);
+        setError('Failed to load conversation history. Please try again.');
+        setMessages([]);
+      } finally {
+        setLoadingMessages(false);
       }
     };
 
@@ -125,7 +132,18 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ conversationId, mode = 'c
   return (
     <div className="flex flex-col h-full">
       <div className="flex-1 overflow-y-auto space-y-4 min-h-[320px] max-h-[60vh] p-4 card">
-        {messages.length === 0 ? (
+        {loadingMessages ? (
+          <div className="h-full grid place-items-center text-center">
+            <div className="space-y-3">
+              <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto animate-pulse">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+              </div>
+              <p className="text-sm text-blue-600 dark:text-gray-300">
+                Loading conversation history...
+              </p>
+            </div>
+          </div>
+        ) : messages.length === 0 ? (
           <div className="h-full grid place-items-center text-center">
             <div className="space-y-3">
               <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto animate-pulse-slow">
@@ -170,11 +188,43 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ conversationId, mode = 'c
         )}
         {error && (
           <div className="mt-4 p-3 bg-red-500/20 border border-red-500/50 rounded-lg text-red-200 text-sm">
-            <div className="flex items-center space-x-2">
-              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-              </svg>
-              <span>{error}</span>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                </svg>
+                <span>{error}</span>
+              </div>
+              {conversationId && (
+                <button
+                  onClick={() => {
+                    setError(null);
+                    const loadHistory = async () => {
+                      setLoadingMessages(true);
+                      try {
+                        const history: MessageResponseApi[] = await apiService.listMessages(conversationId, 100);
+                        const mapped: Message[] = history.map((m, idx) => ({
+                          id: `${m.created_at}-${idx}`,
+                          text: m.content,
+                          isUser: m.role === 'user',
+                          timestamp: new Date(m.created_at)
+                        }));
+                        setMessages(mapped);
+                        setError(null);
+                      } catch (e) {
+                        console.error('Failed to load conversation history', e);
+                        setError('Failed to load conversation history. Please try again.');
+                      } finally {
+                        setLoadingMessages(false);
+                      }
+                    };
+                    loadHistory();
+                  }}
+                  className="text-red-300 hover:text-red-100 text-xs underline"
+                >
+                  Retry
+                </button>
+              )}
             </div>
           </div>
         )}

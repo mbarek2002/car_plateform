@@ -90,6 +90,9 @@ class RAGService:
         
         # Search vector database
         results = self.vectordb.search(query_embedding, top_k)
+
+        print("Search Results:", results)
+        print(f"Conversation ID: {conversation_id}")
         
         # Filter by conversation if specified
         if conversation_id:
