@@ -7,7 +7,7 @@ from typing import Optional
 import shutil
 from pathlib import Path
 from src.db.mongodb import get_database
-from src.api.deps import get_pdf_service
+from src.api.deps import get_pdf_service , get_rag_service
 from src.core.config import settings
 
 router = APIRouter(prefix="/pdfs", tags=["pdfs"])
@@ -172,11 +172,12 @@ async def delete_pdf(
     pdf_id: str , 
     db=Depends(get_database),
     pdf_service:PdfService=Depends(get_pdf_service),
+    rag_service:RAGService=Depends(get_rag_service)
     ):
     """Delete a specific PDF"""
     try:
         # service = RAGService(db)
-        pdf_service.delete_pdf(pdf_id)
+        rag_service.delete_pdf(pdf_id)
         return {"message": "PDF deleted successfully"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

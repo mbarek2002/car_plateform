@@ -30,10 +30,14 @@ class PDFRepository:
     
     def delete(self, pdf_id: str) -> int:
         result = self.collection.delete_one({"pdf_id": pdf_id})
+        if result.deleted_count > 0:
+            self.rag_service.vectordb.delete_by_pdf_id(pdf_id)
         return result.deleted_count
     
     def delete_by_conversation(self, conversation_id: str) -> int:
         result = self.collection.delete_many({"conversation_id": conversation_id})
+        if result.deleted_count > 0:
+            self.rag_service.vectordb.delete_by_conversation_id(conversation_id)
         return result.deleted_count
     
     def count_all(self) -> int:

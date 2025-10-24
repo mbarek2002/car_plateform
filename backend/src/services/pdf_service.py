@@ -23,5 +23,5 @@ class PdfService:
     def delete_pdf(self, pdf_id: str):
         """Delete a PDF"""
         self.pdf_repo.delete(pdf_id)
-        self.vectordb.delete_by_pdf_id(pdf_id)
+        # self.vectordb.delete_by_pdf_id(pdf_id)
     

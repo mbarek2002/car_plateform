@@ -4,6 +4,7 @@ from src.repositories.pdf_repository import PDFRepository
 from src.services.conversation_service import ConversationService
 from src.services.prediction_service import PredictionService
 from src.services.pdf_service import PdfService
+from src.services.rag_service import RAGService
 from src.services.auth import AuthService
 
 from src.db.connection import get_database
@@ -32,6 +33,10 @@ async def get_prediction_service():
 async def get_pdf_service():
     db=get_database()
     return PdfService(db)
+
+async def get_rag_service():
+    db=get_database()
+    return RAGService(db)
 
 async def get_auth_service():
     db=get_database()

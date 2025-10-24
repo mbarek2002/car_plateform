@@ -14,3 +14,7 @@ class VectorDBInterface(ABC):
     @abstractmethod
     def delete_by_pdf_id(self, pdf_id: str) -> None:
         pass
+
+    @abstractmethod
+    def delete_by_conversation_id(self, conversation_id: str) -> None:
+        pass

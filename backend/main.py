@@ -7,7 +7,7 @@ from src.services.rag_service import RAGService
 
 from src.api.v1.router import router as api_router
 from src.db.mongodb import MongoDB , get_database
-
+from src.stores.vectordb.vectordb_factory import VectorDBFactory
 # Initialize FastAPI
 app = FastAPI(
     title="RAG System API",
@@ -40,6 +40,10 @@ async def startup_event():
     """Initialize database connection on startup"""
     global rag_service 
     mongodb = MongoDB()
+    vectordb = VectorDBFactory.create(
+            "chroma",
+            api_key=settings.PINECONE_API_KEY if "chroma" == "pinecone" else None
+        )
     settings.rag_service = RAGService(db=mongodb.db)
     # rag_service =   
     print(f"✅ Connected to MongoDB: {mongodb.db.name}")

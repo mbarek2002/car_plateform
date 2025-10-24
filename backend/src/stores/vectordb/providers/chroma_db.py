@@ -34,3 +34,13 @@ class ChromaDB(VectorDBInterface):
             print(f"✅ Successfully deleted all chunks for pdf_id={pdf_id} from ChromaDB.")
         except Exception as e:
             print(f"⚠️ Failed to delete chunks for pdf_id={pdf_id}: {e}")
+
+    def delete_by_conversation_id(self, conversation_id: str) -> None:
+        """
+        Delete all vector chunks from Chroma that belong to a specific conversation_id.
+        """
+        try:
+            self.collection.delete(where={"conversation_id": conversation_id})
+            print(f"✅ Successfully deleted all chunks for conversation_id={conversation_id} from ChromaDB.")
+        except Exception as e:
+            print(f"⚠️ Failed to delete chunks for conversation_id={conversation_id}: {e}")
