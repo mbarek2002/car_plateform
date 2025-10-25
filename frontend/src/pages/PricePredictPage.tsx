@@ -27,7 +27,7 @@ const PricePredictPage: React.FC = () => {
     condition: 'excellent',
     features: []
   });
-  
+
   const [prediction, setPrediction] = useState<PredictionResponse | null>(null);
   const [history, setHistory] = useState<PredictionHistoryItem[]>([]);
   const [loading, setLoading] = useState(false);
@@ -233,7 +233,7 @@ const PricePredictPage: React.FC = () => {
           </div>
           <h2 className="text-2xl font-semibold text-white">Vehicle Information</h2>
         </div>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Car Model */}
           <div className="space-y-2">
@@ -418,7 +418,7 @@ const PricePredictPage: React.FC = () => {
                     <div className="text-sm text-gray-400">{new Date(item.created_at).toLocaleString()}</div>
                     <div className="text-2xl font-bold gradient-text mt-1">
                       {item.predicted_price.toFixed(2)}
-                {/* {formatPrice(item.predicted_price)} */}
+                      {/* {formatPrice(item.predicted_price)} */}
 
                     </div>
                   </div>

@@ -18,3 +18,4 @@ xgboost
 pydantic[email]
 passlib
 jwt
+unsloth

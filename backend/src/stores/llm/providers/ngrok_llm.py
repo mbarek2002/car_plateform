@@ -4,7 +4,7 @@ from src.stores.llm.llm_interface import LLMInterface
 class NgrokLLM(LLMInterface):
     def __init__(self, 
                 #  api_key: str = None,
-                 ngrok_url: str = "https://667dea226da7.ngrok-free.app"):
+                 ngrok_url: str = "https://fa90292743cb.ngrok-free.app"):
         """
         NgrokLLM connects to a remote LLM served via ngrok.
 
@@ -17,7 +17,7 @@ class NgrokLLM(LLMInterface):
         print(f"🔗 Connected to remote LLM endpoint: {self.ngrok_url}")
 
     def generate(self, prompt: str, max_tokens: int = 300, temperature: float = 0.7) -> str:
-        """
+        """ 
         Sends a text generation request to the remote model via ngrok.
 
         Args:
@@ -41,7 +41,7 @@ class NgrokLLM(LLMInterface):
 
             if response.status_code == 200:
                 data = response.json()
-                return data.get("answer", "").strip()
+                return data.get("answer", "").strip().split("assistant")[-1].strip()
 
             print(f"❌ Request failed: {response.status_code} - {response.text}")
             return "Error generating response from remote LLM."
