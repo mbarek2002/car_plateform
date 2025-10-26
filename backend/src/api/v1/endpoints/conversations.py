@@ -7,13 +7,14 @@ from src.schemas.message_schema import MessageResponse , MessageCreate
 from src.services.conversation_service import ConversationService
 
 from src.db.mongodb import get_database
-from src.api.deps import get_conversation_service
+from src.api.deps import get_conversation_service , get_current_user
 
 router = APIRouter(prefix="/conversations", tags=["conversations"])
 
 @router.post('' , response_model = ConversationResponse)
 async def create_conversation(
     conversation : ConversationCreate ,
+    current_user = Depends(get_current_user),
       db=Depends(get_database),
       conversation_service: ConversationService = Depends(get_conversation_service)
       ):

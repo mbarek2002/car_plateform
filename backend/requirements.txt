@@ -17,5 +17,5 @@ pandas
 xgboost
 pydantic[email]
 passlib
-jwt
+PyJWT
 unsloth

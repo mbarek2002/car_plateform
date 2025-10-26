@@ -17,7 +17,7 @@ def signup(
         raise HTTPException(status_code=400 , detail=str(e))
 
 @router.post("/login")
-def signup(
+def login(
     user : UserCreate,
     auth_service : AuthService = Depends(get_auth_service)
     ):

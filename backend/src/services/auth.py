@@ -13,7 +13,7 @@ def hash_password(password:str):
     return pwd_context.hash(password)
 
 def verify_password(plain_password , hashed_password):
-    return pwd_context.verify(plain_password , hash_password)
+    return pwd_context.verify(plain_password , hashed_password)
 
 def create_access_token(data:dict):
     to_encode = data.copy()
@@ -38,7 +38,7 @@ class AuthService :
     def login(self , email  : str , password :str):
         user = self.user_repo.get_by_email(email)
         print(password)
-        if not user or not verify_password(password , user["hashed_password"]) :
+        if not user or not verify_password(password , user.hashed_password) :
             raise ValueError("Invalid credentials")
         token = create_access_token({"sub": user.email})
         return token
