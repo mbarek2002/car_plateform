@@ -1,7 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 
 const HomePage: React.FC = () => {
+  const { isAuthenticated } = useAuth();
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6">
       {/* Hero */}
@@ -14,16 +17,36 @@ const HomePage: React.FC = () => {
         <h1 className="text-4xl sm:text-5xl font-bold gradient-text">Your AI Copilot for Cars</h1>
         <p className="text-zinc-600 dark:text-gray-300 text-lg max-w-2xl mx-auto">Chat with your manuals, upload global PDFs, and predict car prices using a trained model.</p>
         <div className="flex flex-wrap items-center justify-center gap-3">
-          <Link to="/chat" className="btn-primary px-6 py-3 rounded-lg">Open Chat</Link>
+          {isAuthenticated ? (
+            <>
+              <Link to="/chat" className="btn-primary px-6 py-3 rounded-lg">Open Chat</Link>
+              <Link to="/pdfs" className="btn-secondary px-6 py-3 rounded-lg border border-steel">Global PDFs</Link>
+            </>
+          ) : (
+            <>
+              <Link to="/login" className="btn-primary px-6 py-3 rounded-lg">Get Started</Link>
+              <Link to="/signup" className="btn-secondary px-6 py-3 rounded-lg border border-steel">Sign Up</Link>
+            </>
+          )}
           <Link to="/price" className="btn-secondary px-6 py-3 rounded-lg border border-steel">Predict Price</Link>
         </div>
       </section>
 
       {/* Features */}
       <section className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6">
-        <FeatureCard title="RAG Chat" desc="Ask questions about your car PDFs and receive precise answers." icon={<span>💬</span>} />
-        <FeatureCard title="Global PDFs" desc="Upload universal reference docs accessible from any chat." icon={<span>📄</span>} />
-        <FeatureCard title="Price Prediction" desc="Get data-driven estimates tailored to your inputs." icon={<span>💲</span>} />
+        {isAuthenticated ? (
+          <>
+            <FeatureCard title="RAG Chat" desc="Ask questions about your car PDFs and receive precise answers." icon={<span>💬</span>} />
+            <FeatureCard title="Global PDFs" desc="Upload universal reference docs accessible from any chat." icon={<span>📄</span>} />
+            <FeatureCard title="Price Prediction" desc="Get data-driven estimates tailored to your inputs." icon={<span>💲</span>} />
+          </>
+        ) : (
+          <>
+            <FeatureCard title="Sign Up" desc="Create an account to access all features and start chatting with your car documents." icon={<span>👤</span>} />
+            <FeatureCard title="Price Prediction" desc="Get data-driven estimates tailored to your inputs." icon={<span>💲</span>} />
+            <FeatureCard title="Health Check" desc="Monitor system status and API connectivity." icon={<span>🔍</span>} />
+          </>
+        )}
       </section>
     </div>
   );

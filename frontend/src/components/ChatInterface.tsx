@@ -130,31 +130,32 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ conversationId, mode = 'c
   };
 
   return (
-    <div className="flex flex-col h-full">
-      <div className="flex-1 overflow-y-auto space-y-4 min-h-[320px] max-h-[60vh] p-4 card">
+    <div className="flex flex-col h-full bg-white dark:bg-slate-800 rounded-lg overflow-hidden shadow-sm">
+      {/* Chat Header - Simplified */}
+      <div className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 px-4 py-2">
+        <div className="flex items-center">
+          <h3 className="text-base font-medium text-slate-900 dark:text-white">
+            {mode === 'prediction' ? 'Price Assistant' : 'AI Chat'}
+          </h3>
+        </div>
+      </div>
+
+      {/* Messages Area - Simplified */}
+      <div className="flex-1 overflow-y-auto p-3 space-y-2 bg-white dark:bg-slate-800 custom-scrollbar">
         {loadingMessages ? (
-          <div className="h-full grid place-items-center text-center">
-            <div className="space-y-3">
-              <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto animate-pulse">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
-              </div>
-              <p className="text-sm text-blue-600 dark:text-gray-300">
-                Loading conversation history...
-              </p>
-            </div>
+          <div className="h-full flex items-center justify-center">
+            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500"></div>
           </div>
         ) : messages.length === 0 ? (
-          <div className="h-full grid place-items-center text-center">
-            <div className="space-y-3">
-              <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto animate-pulse-slow">
-                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                </svg>
-              </div>
-              <p className="text-sm text-blue-600 dark:text-gray-300">
+          <div className="h-full flex items-center justify-center">
+            <div className="text-center max-w-md">
+              <h4 className="text-lg font-medium text-slate-900 dark:text-white mb-2">
+                {mode === 'prediction' ? 'Welcome to Price Assistant' : 'Start a Conversation'}
+              </h4>
+              <p className="text-slate-600 dark:text-slate-300 text-sm">
                 {mode === 'prediction' 
-                  ? 'Ask about prices or market information.' 
-                  : 'Type a message to begin.'
+                  ? 'Ask me about car prices, market trends, or get predictions.' 
+                  : 'Upload your car documents and ask me anything about them.'
                 }
               </p>
             </div>
@@ -163,98 +164,115 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ conversationId, mode = 'c
           messages.map((message, index) => (
             <div
               key={message.id}
-              className={`flex ${message.isUser ? 'justify-end' : 'justify-start'} animate-slide-in-right`}
-              style={{ animationDelay: `${index * 0.1}s` }}
+              className={`flex ${message.isUser ? 'justify-end' : 'justify-start'}`}
             >
-              <div
-                className={`px-4 py-3 rounded-2xl max-w-[80%] shadow-lg text-sm whitespace-pre-wrap hover-lift ${
-                  message.isUser
-                    ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-br-md'
-                    : 'bg-zinc-100 text-zinc-800 border border-zinc-200 rounded-bl-md dark:bg-slate-700/50 dark:text-gray-100 dark:border-slate-600/50'
-                }`}
-              >
-                {message.text}
+              {/* Simplified Message Bubble */}
+              <div className={`px-3 py-2 rounded-lg max-w-[80%] ${
+                message.isUser
+                  ? 'bg-blue-500 text-white'
+                  : 'bg-gray-100 dark:bg-slate-700 text-slate-900 dark:text-white'
+              }`}>
+                <div className="whitespace-pre-wrap text-sm">
+                  {message.text}
+                </div>
+                {message.timestamp && (
+                  <div className={`text-xs mt-1 ${
+                    message.isUser ? 'text-blue-100' : 'text-slate-500 dark:text-slate-400'
+                  }`}>
+                    {message.timestamp.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                  </div>
+                )}
               </div>
             </div>
           ))
         )}
+        
+        {/* Simplified Typing Indicator */}
         {loading && (
-          <div className="flex justify-center mt-4">
-            <div className="flex items-center space-x-2 bg-zinc-100 dark:bg-slate-800/50 px-4 py-2 rounded-full">
-              <div className="spinner" />
-              <span className="text-sm text-zinc-700 dark:text-gray-300">Working...</span>
+          <div className="flex justify-start">
+            <div className="bg-gray-100 dark:bg-slate-700 rounded-lg px-3 py-2">
+              <div className="flex space-x-1">
+                <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+                <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse delay-75"></div>
+                <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse delay-150"></div>
+              </div>
             </div>
           </div>
         )}
+        
+        {/* Simplified Error Message */}
         {error && (
-          <div className="mt-4 p-3 bg-red-500/20 border border-red-500/50 rounded-lg text-red-200 text-sm">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-2">
-                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                </svg>
-                <span>{error}</span>
-              </div>
-              {conversationId && (
-                <button
-                  onClick={() => {
-                    setError(null);
-                    const loadHistory = async () => {
-                      setLoadingMessages(true);
-                      try {
-                        const history: MessageResponseApi[] = await apiService.listMessages(conversationId, 100);
-                        const mapped: Message[] = history.map((m, idx) => ({
-                          id: `${m.created_at}-${idx}`,
-                          text: m.content,
-                          isUser: m.role === 'user',
-                          timestamp: new Date(m.created_at)
-                        }));
-                        setMessages(mapped);
-                        setError(null);
-                      } catch (e) {
-                        console.error('Failed to load conversation history', e);
-                        setError('Failed to load conversation history. Please try again.');
-                      } finally {
-                        setLoadingMessages(false);
-                      }
-                    };
-                    loadHistory();
-                  }}
-                  className="text-red-300 hover:text-red-100 text-xs underline"
-                >
-                  Retry
-                </button>
-              )}
-            </div>
+          <div className="bg-red-50 dark:bg-red-900/20 rounded-lg p-3">
+            <p className="text-sm text-red-700 dark:text-red-300">{error}</p>
+            {conversationId && (
+              <button
+                onClick={() => {
+                  setError(null);
+                  const loadHistory = async () => {
+                    setLoadingMessages(true);
+                    try {
+                      const history: MessageResponseApi[] = await apiService.listMessages(conversationId, 100);
+                      const mapped: Message[] = history.map((m, idx) => ({
+                        id: `${m.created_at}-${idx}`,
+                        text: m.content,
+                        isUser: m.role === 'user',
+                        timestamp: new Date(m.created_at)
+                      }));
+                      setMessages(mapped);
+                      setError(null);
+                    } catch (e) {
+                      console.error('Failed to load conversation history', e);
+                      setError('Failed to load conversation history. Please try again.');
+                    } finally {
+                      setLoadingMessages(false);
+                    }
+                  };
+                  loadHistory();
+                }}
+                className="mt-2 text-xs text-red-600 dark:text-red-400 hover:underline"
+              >
+                Retry
+              </button>
+            )}
           </div>
         )}
         <div ref={endRef} />
       </div>
 
-      <div className="mt-4 flex items-end gap-3">
-        <div className="flex-1 relative">
-          <textarea
-            className="input-primary resize-none pr-12"
-            placeholder={mode === 'prediction' ? "Ask about car prices or market trends..." : "Ask a question..."}
+      {/* Simplified Input Area */}
+      <div className="bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 p-3">
+        <div className="flex items-center space-x-2">
+          <input
+            type="text"
+            className="flex-1 px-3 py-2 bg-gray-100 dark:bg-slate-700 border-none rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-400"
+            placeholder={mode === 'prediction' ? "Ask about car prices..." : "Ask a question..."}
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
             onKeyDown={handleKeyDown}
-            rows={1}
           />
+          <button
+            className={`h-9 w-9 rounded-lg flex items-center justify-center ${
+              loading || !inputText.trim()
+                ? 'bg-gray-300 dark:bg-slate-600 cursor-not-allowed'
+                : 'bg-blue-500 hover:bg-blue-600'
+            }`}
+            onClick={handleSendMessage}
+            disabled={loading || !inputText.trim()}
+            aria-label="Send message"
+          >
+            <svg 
+              className="w-4 h-4 text-white" 
+              fill="none" 
+              stroke="currentColor" 
+              viewBox="0 0 24 24"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+            </svg>
+          </button>
         </div>
-        <button
-          className="btn-primary h-12 w-12 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover-lift"
-          onClick={handleSendMessage}
-          disabled={loading || !inputText.trim()}
-          aria-label="Send"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
-            <path d="M3.4 20.6 22 12 3.4 3.4l.1 6.9L15 12 3.5 13.7l-.1 6.9z" />
-          </svg>
-        </button>
       </div>
     </div>
   );
-};
+}
 
 export default ChatInterface;

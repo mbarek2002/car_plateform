@@ -7,6 +7,7 @@ from src.services.pdf_service import PdfService
 from src.services.rag_service import RAGService
 from src.services.auth import AuthService
 
+
 from src.db.connection import get_database
 
 from fastapi import Depends , HTTPException , status
@@ -18,7 +19,7 @@ from src.repositories.user_repository import UserRepository
 
 settings = Settings()
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl = "/v1/auth/login")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/v1/auth/login")
 
 async def get_conversation_repository():
     db=get_database()
@@ -75,3 +76,4 @@ def get_current_user(token: str = Depends(oauth2_scheme),
         raise credentials_exception
     
     return user
+

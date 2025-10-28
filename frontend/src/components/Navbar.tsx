@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 
 const Navbar: React.FC = () => {
   const location = useLocation();
+  const { isAuthenticated, user, logout } = useAuth();
   const isActive = (path: string) => location.pathname === path;
   const [menuOpen, setMenuOpen] = useState(false);
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
@@ -33,14 +35,32 @@ const Navbar: React.FC = () => {
         </Link>
 
         <nav className="hidden md:flex items-center gap-2">
-          <NavItem to="/chat" label="Chat" active={isActive('/chat')} />
-          <NavItem to="/pdfs" label="Global PDFs" active={isActive('/pdfs')} />
+          {isAuthenticated ? (
+            <>
+              <NavItem to="/chat" label="Chat" active={isActive('/chat')} />
+              <NavItem to="/pdfs" label="Global PDFs" active={isActive('/pdfs')} />
+              <NavItem to="/settings" label="Settings" active={isActive('/settings')} />
+              <div className="flex items-center gap-2 ml-2">
+                <span className="text-sm text-zinc-600 dark:text-gray-300">
+                  {user?.email}
+                </span>
+                <button
+                  onClick={logout}
+                  className="px-3 py-2 rounded-lg text-sm font-medium transition-colors text-zinc-700 hover:bg-zinc-100 dark:text-gray-300 dark:hover:bg-steel/50"
+                >
+                  Logout
+                </button>
+              </div>
+            </>
+          ) : (
+            <>
+              <NavItem to="/login" label="Login" active={isActive('/login')} />
+              <NavItem to="/signup" label="Sign Up" active={isActive('/signup')} />
+            </>
+          )}
           <NavItem to="/price" label="Price" active={isActive('/price')} />
           <NavItem to="/stats" label="Stats" active={isActive('/stats')} />
           <NavItem to="/health" label="Health" active={isActive('/health')} />
-          <NavItem to="/settings" label="Settings" active={isActive('/settings')} />
-          <NavItem to="/login" label="Login" active={isActive('/login')} />
-          <NavItem to="/signup" label="Sign Up" active={isActive('/signup')} />
           <button
             aria-label="Toggle theme"
             className="ml-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors text-zinc-700 hover:bg-zinc-100 dark:text-gray-300 dark:hover:bg-steel/50"
@@ -70,14 +90,30 @@ const Navbar: React.FC = () => {
       {menuOpen && (
         <div className="md:hidden border-t border-zinc-200 dark:border-steel bg-white/90 dark:bg-asphalt/80 backdrop-blur">
           <div className="max-w-7xl mx-auto px-4 py-2 flex flex-col gap-1">
-            <NavItem to="/chat" label="Chat" active={isActive('/chat')} />
-            <NavItem to="/pdfs" label="Global PDFs" active={isActive('/pdfs')} />
+            {isAuthenticated ? (
+              <>
+                <NavItem to="/chat" label="Chat" active={isActive('/chat')} />
+                <NavItem to="/pdfs" label="Global PDFs" active={isActive('/pdfs')} />
+                <NavItem to="/settings" label="Settings" active={isActive('/settings')} />
+                <div className="px-3 py-2 text-sm text-zinc-600 dark:text-gray-300">
+                  {user?.email}
+                </div>
+                <button
+                  onClick={logout}
+                  className="px-3 py-2 rounded-lg text-sm font-medium transition-colors text-zinc-700 hover:bg-zinc-100 dark:text-gray-300 dark:hover:bg-steel/50 text-left"
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              <>
+                <NavItem to="/login" label="Login" active={isActive('/login')} />
+                <NavItem to="/signup" label="Sign Up" active={isActive('/signup')} />
+              </>
+            )}
             <NavItem to="/price" label="Price" active={isActive('/price')} />
             <NavItem to="/stats" label="Stats" active={isActive('/stats')} />
             <NavItem to="/health" label="Health" active={isActive('/health')} />
-            <NavItem to="/settings" label="Settings" active={isActive('/settings')} />
-            <NavItem to="/login" label="Login" active={isActive('/login')} />
-            <NavItem to="/signup" label="Sign Up" active={isActive('/signup')} />
           </div>
         </div>
       )}

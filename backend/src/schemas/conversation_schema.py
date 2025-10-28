@@ -8,7 +8,6 @@ class ConversationCreate(BaseModel):
 
 class ConversationResponse(BaseModel):
     conversation_id: str
-    title: str
+    user_id: Optional[str]
+    title: str  
     created_at: datetime
-
-

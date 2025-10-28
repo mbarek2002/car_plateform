@@ -120,6 +120,33 @@ const apiClient = axios.create({
   timeout: 30000, // 30 seconds timeout
 });
 
+// Add request interceptor to include token
+apiClient.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+// Add response interceptor to handle 401 errors
+apiClient.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      // Token is invalid, clear it
+      localStorage.removeItem('token');
+      window.location.href = '/login';
+    }
+    return Promise.reject(error);
+  }
+);
+
 // Add retry mechanism
 const retryRequest = async <T>(
   requestFn: () => Promise<T>,
@@ -166,7 +193,14 @@ export const apiService = {
   },
 
   login: async (credentials: UserLogin): Promise<LoginResponse> => {
-    const { data } = await apiClient.post('/auth/login', credentials);
+    // Convert to form data as required by OAuth2PasswordRequestForm
+    const formData = new URLSearchParams();
+    formData.append('username', credentials.email); 
+    formData.append('password', credentials.password);
+    
+    const { data } = await apiClient.post('/auth/login', formData, {
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    });
     return data as LoginResponse;
   },
 

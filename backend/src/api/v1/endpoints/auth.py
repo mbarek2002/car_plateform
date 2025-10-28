@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException , Depends
 from src.schemas.user_schema import UserCreate, UserLogin, UserResponse
 from src.services.auth import AuthService
 from src.api.deps import get_auth_service
+from fastapi.security import OAuth2PasswordRequestForm
 
 router = APIRouter( prefix = "/auth" , tags=['auth'] )
 
@@ -18,11 +19,13 @@ def signup(
 
 @router.post("/login")
 def login(
-    user : UserCreate,
+    # user : UserCreate,
+    form_data: OAuth2PasswordRequestForm = Depends(),
     auth_service : AuthService = Depends(get_auth_service)
     ):
     try:
-        token = auth_service.login(user.email , user.password)
+        print(form_data)
+        token = auth_service.login(form_data.username , form_data.password)
         return {"access_token":token , "token_type":"bearer"}
     except ValueError as e :
         raise HTTPException(status_code=400 , detail=str(e))
