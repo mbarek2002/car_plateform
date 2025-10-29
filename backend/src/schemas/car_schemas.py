@@ -11,6 +11,7 @@ class Location(BaseModel):
     class Config:
         frozen = True
 
+
 class Car(BaseModel):
     """Car entity schema."""
     car_id: str
@@ -38,6 +39,7 @@ class Car(BaseModel):
     posting_date: Optional[datetime] = None
     combined_text: Optional[str] = None
 
+
 class CarFilters(BaseModel):
     """Car filtering criteria."""
     min_price: Optional[float] = Field(None, ge=0)
@@ -52,4 +54,3 @@ class CarFilters(BaseModel):
     transmissions: Optional[list[str]] = None
     states: Optional[list[str]] = None
     max_distance_km: Optional[float] = Field(None, ge=0)
-

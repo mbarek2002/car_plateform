@@ -1,56 +1,42 @@
+import json
 import numpy as np
 from typing import Optional
-from motor.motor_asyncio import AsyncIOMotorDatabase
-from src.config import get_settings
+from pathlib import Path
+from src.core.config import settings
+import os
+from pathlib import Path
 
 
 class EmbeddingRepository:
-    """Repository for embedding data operations."""
+    """Repository for embedding data operations - reads from JSON file."""
     
-    def __init__(self, db: AsyncIOMotorDatabase):
-        self.db = db
-        self.settings = get_settings()
-        self.collection = db[self.settings.EMBEDDINGS_COLLECTION]
-        self._cache = {}
-    
-    async def get_embedding(self, car_id: str) -> Optional[np.ndarray]:
-        """Get embedding for a car."""
-        if car_id in self._cache:
-            return self._cache[car_id]
-        doc = await self.collection.find_one({"car_id": car_id})
-        if doc and "embedding" in doc:
-            embedding = np.array(doc["embedding"], dtype=np.float32)
-            self._cache[car_id] = embedding
-            return embedding
-        return None
-    
-    async def get_all_embeddings(self) -> dict[str, np.ndarray]:
-        """Get all embeddings."""
-        if self._cache:
-            return self._cache
-        embeddings = {}
-        cursor = self.collection.find({})
-        async for doc in cursor:
-            car_id = doc["car_id"]
-            embedding = np.array(doc["embedding"], dtype=np.float32)
-            embeddings[car_id] = embedding
-        self._cache = embeddings
-        return embeddings
-    
-    async def save_many_embeddings(self, embeddings: dict[str, np.ndarray]) -> int:
-        """Save multiple embeddings."""
-        if not embeddings:
-            return 0
-        from pymongo import UpdateOne
-        operations = [
-            UpdateOne(
-                {"car_id": car_id},
-                {"$set": {"car_id": car_id, "embedding": emb.tolist()}},
-                upsert=True
-            )
-            for car_id, emb in embeddings.items()
-        ]
-        result = await self.collection.bulk_write(operations)
-        self._cache.update(embeddings)
-        return result.upserted_count + result.modified_count
+    _embeddings_cache = None
+    _current_dir = Path.cwd()
 
+    def __init__(self):
+        self.settings = settings
+        self.data_file = EmbeddingRepository._current_dir / self.settings.DATA_FILE_PATH
+        if EmbeddingRepository._embeddings_cache is None:
+            self._load_embeddings()
+
+    def _load_embeddings(self):
+        """Load embeddings from JSON file once."""
+        print(f"📂 Loading embeddings from {self.data_file}...")
+        with open(self.data_file,'r',encoding='utf-8')  as f:
+            data = json.load(f)
+
+        EmbeddingRepository._embeddings_cache = {}
+        for car_id , car_data in data['embeddings'].items():
+            embedding = np.array(car_data['embedding'],dtype=np.float32)
+            EmbeddingRepository._embeddings_cache[car_id] = embedding
+        
+        print(f"✅ Loaded {len(EmbeddingRepository._embeddings_cache)} embeddings")
+
+    def get_embedding(self , car_id:str) -> Optional[np.array]:
+        """Get embedding for a car."""
+        return EmbeddingRepository._embeddings_cache.get(car_id)
+    
+    def get_all_embeddings(self) ->dict[str, np.array]:
+        """Get all embeddings."""
+        print(self.data_file)
+        return EmbeddingRepository._embeddings_cache

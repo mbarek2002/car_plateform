@@ -38,5 +38,18 @@ class Settings:
     # rag service
     rag_service = None
 
+    # Data Source
+    DATA_FILE_PATH: str = "src/data/cars_embeddings.json"
+
+    # Scoring Weights
+    SIMILARITY_WEIGHT: float = 0.7
+    DISTANCE_WEIGHT: float = 0.3
+    MAX_DISTANCE_KM: float = 500.0
+
+    # Recommendation Settings
+    DEFAULT_TOP_N: int = 10
+    MAX_TOP_N: int = 100
+    SIMILARITY_THRESHOLD: float = 0.5
+
 settings = Settings()
 

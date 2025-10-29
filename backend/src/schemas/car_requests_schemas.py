@@ -18,6 +18,7 @@ class RecommendByIdRequest(BaseModel):
     types: Optional[list[str]] = None
     states: Optional[list[str]] = None
 
+
 class RecommendByTextRequest(BaseModel):
     """Request for recommendations by text query."""
     query: str = Field(..., min_length=1)
@@ -32,6 +33,7 @@ class RecommendByTextRequest(BaseModel):
     max_year: Optional[int] = None
     manufacturers: Optional[list[str]] = None
     types: Optional[list[str]] = None
+
 
 class CarResponse(BaseModel):
     """Car response schema."""
