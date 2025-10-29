@@ -62,3 +62,12 @@ node_modules/
 __pycache__/
 *.pyc
 *.pyo
+
+backend/src/data/cars_embeddings.json
+
+# Ignore local data / model / embeddings
+backend/src/data/*.json
+backend/src/data/*.pkl
+backend/src/models/*.pkl
+backend/src/data/*.npy
+
