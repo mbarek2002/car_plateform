@@ -138,4 +138,4 @@ temp_uploads/
 .DS_Store
 Thumbs.db
 
-src/data/*.json
+backend/src/data/cars_embeddings.json
