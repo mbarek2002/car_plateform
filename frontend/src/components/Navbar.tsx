@@ -23,7 +23,7 @@ const Navbar: React.FC = () => {
   return (
     <header className="fixed inset-x-0 top-0 z-40 backdrop-blur bg-white/80 dark:bg-asphalt/75 border-b border-zinc-200 dark:border-steel">
       <div className="max-w-7xl mx-auto flex items-center justify-between px-4 sm:px-6 h-16">
-        <Link to="/" className="flex items-center gap-2">
+        <Link to="/" className="flex items-center gap-2" aria-label="Home">
           <div className="w-9 h-9 rounded bg-brand grid place-items-center shadow-card">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 text-asphalt">
               <path d="M3 13h18l-1.5-3.75a4 4 0 0 0-3.7-2.5H8.2a4 4 0 0 0-3.7 2.5L3 13z"/>
@@ -58,7 +58,9 @@ const Navbar: React.FC = () => {
               <NavItem to="/signup" label="Sign Up" active={isActive('/signup')} />
             </>
           )}
-          <NavItem to="/price" label="Price" active={isActive('/price')} />
+          <NavItem to="/cars" label="Cars" active={isActive('/cars')} />
+          <NavItem to="/recommendation-search" label="Recommendations" active={isActive('/recommendation-search')} />
+          <NavItem to="/price" label="Price Prediction" active={isActive('/price')} />
           <NavItem to="/stats" label="Stats" active={isActive('/stats')} />
           <NavItem to="/health" label="Health" active={isActive('/health')} />
           <button

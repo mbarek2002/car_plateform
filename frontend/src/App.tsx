@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter, Routes, Route, Link, useLocation, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import './App.css';
 
 import ConversationList from './components/ConversationList';
@@ -16,6 +16,10 @@ import SignupPage from './pages/SignupPage';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import HomePage from './pages/HomePage';
+import CarsPage from './pages/CarsPage';
+import CarDetailPage from './pages/CarDetailPage';
+import RecommendationsPage from './pages/RecommendationsPage';
+import RecommendationSearchPage from './pages/RecommendationSearchPage';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 
 // Protected Route Component
@@ -42,9 +46,7 @@ function AppShell() {
   const [pdfList, setPdfList] = useState<PDFInfo[]>([]);
   const [loadingPdfs, setLoadingPdfs] = useState(false);
   const [pdfError, setPdfError] = useState<string | null>(null);
-  const { isAuthenticated } = useAuth();
-
-  const location = useLocation();
+  // const { isAuthenticated } = useAuth();
 
   const fetchPDFs = async (conversationId?: string) => {
     const targetConversationId = conversationId !== undefined ? conversationId : selectedConversationId;
@@ -74,6 +76,7 @@ function AppShell() {
 
   useEffect(() => {
     fetchPDFs(selectedConversationId);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedConversationId]);
 
 
@@ -193,6 +196,10 @@ function AppShell() {
             } />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<SignupPage />} />
+            <Route path="/cars" element={<CarsPage />} />
+            <Route path="/cars/:carId" element={<CarDetailPage />} />
+            <Route path="/recommendations/:carId" element={<RecommendationsPage />} />
+            <Route path="/recommendation-search" element={<RecommendationSearchPage />} />
           </Routes>
         </div>
       </main>
