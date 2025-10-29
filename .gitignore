@@ -71,3 +71,4 @@ backend/src/data/*.pkl
 backend/src/models/*.pkl
 backend/src/data/*.npy
 
+backend/src/data/cars_embeddings.json
