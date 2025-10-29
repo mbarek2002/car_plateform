@@ -23,6 +23,7 @@ class RecommendationService:
         self.scoring_service = scoring_service
         # self.embedding_model = embedding_model
         self.settings = settings
+        self.embedding_model = self.settings.rag_service.embedding
     
     def recommend_by_car_id(
         self,
@@ -57,31 +58,31 @@ class RecommendationService:
         return recommendations
     
 
-    # def recommand_by_text(
-    #         self,
-    #         query_text:str,
-    #         top_n:int = 10,
-    #         user_location:Optional[Location] = None,
-    #         filters:Optional[CarFilters] = None,
-    #         similarity_weight : Optional[float] = None,
-    #         distance_weight : Optional[float] = None
-    # ) -> list[Recommendation]:
-    #     """Recommend cars based on text query."""
-    #     top_n = min(top_n , self.settings.MAX_TOP_N)
-    #     query_embeddings = self.embedding_model.encode(query_text)
-    #     all_embeddings = self.embedding_repo.get_all_embeddings()
+    def recommend_by_text(
+            self,
+            query_text:str,
+            top_n:int = 10,
+            user_location:Optional[Location] = None,
+            filters:Optional[CarFilters] = None,
+            similarity_weight : Optional[float] = None,
+            distance_weight : Optional[float] = None
+    ) -> list[Recommendation]:
+        """Recommend cars based on text query."""
+        top_n = min(top_n , self.settings.MAX_TOP_N)
+        query_embeddings = self.embedding_model.embed(query_text)
+        all_embeddings = self.embedding_repo.get_all_embeddings()
 
-    #     similarities = {}
-    #     for car_id , embedding in all_embeddings.items():
-    #         sim_score = self.scoring_service.calculate_cosine_similarity(query_embeddings , embedding)
-    #         if sim_score >= self.settings.SIMILARITY_THRESHOLD:
-    #             similarities[car_id] = sim_score
+        similarities = {}
+        for car_id , embedding in all_embeddings.items():
+            sim_score = self.scoring_service.calculate_cosine_similarity(query_embeddings , embedding)
+            if sim_score >= self.settings.SIMILARITY_THRESHOLD:
+                similarities[car_id] = sim_score
 
-    #     sorted_cars = sorted(similarities.items() , key= lambda x:x[1],reverse=True)[:top_n * 3]
-    #     recommendations = self._build_recommendations(
-    #         sorted_cars, user_location, filters, similarity_weight, distance_weight, top_n
-    #     )
-    #     return recommendations
+        sorted_cars = sorted(similarities.items() , key= lambda x:x[1],reverse=True)[:top_n * 3]
+        recommendations = self._build_recommendations(
+            sorted_cars, user_location, filters, similarity_weight, distance_weight, top_n
+        )
+        return recommendations
     
     def _build_recommendations(
         self,
@@ -158,7 +159,4 @@ class RecommendationService:
         if filters.states and car.state not in filters.states:
             return False
         return True
-
-
-
 

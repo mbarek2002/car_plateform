@@ -19,6 +19,10 @@ class ScoringService :
         Calculate cosine similarity between two vectors using sklearn.
         Returns value between 0 and 1.
         """
+        # Ensure inputs are numpy arrays
+        vec1 = np.array(vec1, dtype=float)
+        vec2 = np.array(vec2, dtype=float)
+        
         # Reshape vectors to 2D arrays for sklearn
         vec1_2d = vec1.reshape(1,-1)
         vec2_2d = vec2.reshape(1,-1)
