@@ -1,3 +1,40 @@
+# Root dockerignore for unified build context
+
+.git
+.gitignore
+.vscode
+.idea
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Python caches
+**/__pycache__/
+**/*.pyc
+**/*.pyo
+**/*.pyd
+
+# Local env files
+.env
+.env.*
+
+# Local data, uploads, and dbs
+backend/chroma_db/
+backend/temp_uploads/
+**/*.sqlite*
+**/*.db
+**/*.log
+**/*.tmp
+**/*.temp
+
+# Build outputs (frontend build is re-created in stage)
+frontend/build/
+
+# Virtual envs
+env/
+venv/
+.venv/
+
 node_modules
 npm-debug.log
 .yarn
