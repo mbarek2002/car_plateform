@@ -202,7 +202,7 @@ class RAGService:
         
         return {
             "total_conversations": len(conversations),
-            "total_pdfs": total_pdfs,
+            "total_pdfs": total_pdfs,   
             "global_pdfs": len(global_pdfs),
             "conversation_pdfs": total_pdfs - len(global_pdfs)
         }

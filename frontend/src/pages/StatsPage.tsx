@@ -22,7 +22,13 @@ export default function StatsPage() {
 
   return (
     <Box>
-      <Typography variant="h5" gutterBottom>Statistics</Typography>
+      <div className="relative w-full text-center">
+        <div className="absolute inset-0 blur-3xl bg-blue-100/30 rounded-full"></div>
+        <h1 className="relative text-4xl font-bold text-blue-600 animate-fade-in">
+          Statistics
+        </h1>
+      </div>
+      {/* <Typography variant="h5" gutterBottom>Statistics</Typography> */}
       <Paper variant="outlined" sx={{ p: 2 }}>
         {loading || !stats ? (
           <Box sx={{ display: 'flex', justifyContent: 'center' }}>

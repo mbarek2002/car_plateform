@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { carService, RecommendationRequest, TextRecommendationRequest } from '../services/car-api';
+import { carService, TextRecommendationRequest } from '../services/car-api';
 
 const RecommendationSearchPage: React.FC = () => {
   const navigate = useNavigate();
-  const [searchType, setSearchType] = useState<'by-id' | 'by-text'>('by-id');
-  const [carId, setCarId] = useState<string>('');
   const [textQuery, setTextQuery] = useState<string>('');
   const [topN, setTopN] = useState<number>(10);
   const [similarityWeight, setSimilarityWeight] = useState<number>(0.7);
@@ -41,36 +39,26 @@ const RecommendationSearchPage: React.FC = () => {
     setError(null);
 
     try {
-      if (searchType === 'by-id' && carId) {
-        // Rediriger vers la page de recommandations avec les paramètres
-        navigate(`/recommendations/${carId}?topN=${topN}&similarityWeight=${similarityWeight}&distanceWeight=${distanceWeight}`);
-      } else if (searchType === 'by-text' && textQuery) {
-        // Pour les recommandations par texte, nous devons d'abord obtenir les résultats
-        const request: TextRecommendationRequest = {
-          query: textQuery,
-          top_n: topN,
-          similarity_weight: similarityWeight,
-          distance_weight: distanceWeight
+      const request: TextRecommendationRequest = {
+        query: textQuery,
+        top_n: topN,
+        similarity_weight: similarityWeight,
+        distance_weight: distanceWeight
+      };
+      
+      if (userLocation) {
+        request.user_location = {
+          latitude: userLocation.latitude,
+          longitude: userLocation.longitude
         };
-        
-        if (userLocation) {
-          request.user_location = {
-            latitude: userLocation.latitude,
-            longitude: userLocation.longitude
-          };
-        }
-        
-        const results = await carService.getRecommendationsByText(request);
-        // Rediriger vers une page de résultats avec les données
-        // Pour simplifier, nous utiliserons la même page de recommandations
-        if (results.recommendations.length > 0) {
-          const firstCarId = results.recommendations[0].car.car_id;
-          navigate(`/recommendations/${firstCarId}?topN=${topN}&similarityWeight=${similarityWeight}&distanceWeight=${distanceWeight}&fromText=true`);
-        } else {
-          setError("Aucune recommandation trouvée pour cette recherche.");
-        }
+      }
+      
+      const results = await carService.getRecommendationsByText(request);
+      if (results.recommendations.length > 0) {
+        const firstCarId = results.recommendations[0].car.car_id;
+        navigate(`/recommendations/${firstCarId}?topN=${topN}&similarityWeight=${similarityWeight}&distanceWeight=${distanceWeight}&fromText=true`);
       } else {
-        setError("Veuillez fournir un ID de voiture ou une requête textuelle.");
+        setError("Aucune recommandation trouvée pour cette recherche.");
       }
     } catch (err) {
       console.error(err);
@@ -81,157 +69,155 @@ const RecommendationSearchPage: React.FC = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-6">Recherche de recommandations</h1>
-      
+    <div className="max-w-4xl mx-auto px-4 py-12">
+      <div className="text-center mb-12">
+        <h1 className="text-4xl font-bold text-blue-600 mb-4">Recherche de Voiture</h1>
+        <p className="text-gray-600 text-lg">Trouvez la voiture parfaite en décrivant vos préférences</p>
+      </div>
+
       {error && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-          {error}
+        <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg mb-6">
+          <div className="flex">
+            <div className="flex-shrink-0">
+              <svg className="h-5 w-5 text-red-500" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" />
+              </svg>
+            </div>
+            <div className="ml-3">
+              <p className="text-red-700">{error}</p>
+            </div>
+          </div>
         </div>
       )}
-      
-      <div className="bg-white shadow-md rounded-lg p-6 mb-6">
-        <div className="flex space-x-4 mb-6">
-          <button
-            className={`px-4 py-2 rounded-md ${searchType === 'by-id' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
-            onClick={() => setSearchType('by-id')}
-          >
-            Recherche par ID
-          </button>
-          <button
-            className={`px-4 py-2 rounded-md ${searchType === 'by-text' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
-            onClick={() => setSearchType('by-text')}
-          >
-            Recherche par texte
-          </button>
-        </div>
-        
-        <form onSubmit={handleSubmit}>
-          {searchType === 'by-id' ? (
-            <div className="mb-4">
-              <label className="block text-gray-700 mb-2">ID de la voiture</label>
-              <input
-                type="text"
-                value={carId}
-                onChange={(e) => setCarId(e.target.value)}
-                className="w-full px-3 py-2 border rounded-md"
-                placeholder="Entrez l'ID de la voiture"
-              />
-            </div>
-          ) : (
-            <div className="mb-4">
-              <label className="block text-gray-700 mb-2">Description textuelle</label>
-              <textarea
-                value={textQuery}
-                onChange={(e) => setTextQuery(e.target.value)}
-                className="w-full px-3 py-2 border rounded-md"
-                rows={3}
-                placeholder="Décrivez la voiture que vous recherchez..."
-              />
-            </div>
-          )}
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-            <div>
-              <label className="block text-gray-700 mb-2">Nombre de recommandations</label>
+
+      <div className="bg-white rounded-2xl shadow-xl p-8 border border-blue-100">
+        <form onSubmit={handleSubmit} className="space-y-8">
+          <div className="space-y-4">
+            <label className="block text-lg font-medium text-blue-600">Description de la voiture souhaitée</label>
+            <textarea
+              value={textQuery}
+              onChange={(e) => setTextQuery(e.target.value)}
+              className="w-full px-4 py-3 rounded-xl border border-blue-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all resize-none"
+              rows={4}
+              placeholder="Ex: Je recherche une voiture sportive rouge avec moins de 50000 km..."
+            />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-3">
+              <label className="block text-sm font-medium text-blue-600">Nombre de recommandations</label>
               <input
                 type="number"
                 value={topN}
                 onChange={(e) => setTopN(parseInt(e.target.value))}
                 min="1"
                 max="50"
-                className="w-full px-3 py-2 border rounded-md"
+                className="w-full px-4 py-2 rounded-xl border border-blue-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
               />
             </div>
-            
-            <div>
-              <label className="block text-gray-700 mb-2">Poids de similarité</label>
-              <input
-                type="range"
-                value={similarityWeight}
-                onChange={(e) => {
-                  const value = parseFloat(e.target.value);
-                  setSimilarityWeight(value);
-                  setDistanceWeight(parseFloat((1 - value).toFixed(1)));
-                }}
-                min="0"
-                max="1"
-                step="0.1"
-                className="w-full"
-              />
-              <div className="flex justify-between text-sm text-gray-600">
-                <span>0</span>
-                <span>{similarityWeight.toFixed(1)}</span>
-                <span>1</span>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-3">
+                <label className="block text-sm font-medium text-blue-600">
+                  Poids de similarité ({similarityWeight.toFixed(1)})
+                </label>
+                <input
+                  type="range"
+                  value={similarityWeight}
+                  onChange={(e) => setSimilarityWeight(parseFloat(e.target.value))}
+                  min="0"
+                  max="1"
+                  step="0.1"
+                  className="w-full h-2 bg-blue-100 rounded-lg appearance-none cursor-pointer accent-blue-500"
+                />
+                <div className="flex justify-between text-xs text-gray-600">
+                  <span>0.0</span>
+                  <span>0.5</span>
+                  <span>1.0</span>
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <label className="block text-sm font-medium text-blue-600">
+                  Poids de distance ({distanceWeight.toFixed(1)})
+                </label>
+                <input
+                  type="range"
+                  value={distanceWeight}
+                  onChange={(e) => setDistanceWeight(parseFloat(e.target.value))}
+                  min="0"
+                  max="1"
+                  step="0.1"
+                  className="w-full h-2 bg-blue-100 rounded-lg appearance-none cursor-pointer accent-blue-500"
+                />
+                <div className="flex justify-between text-xs text-gray-600">
+                  <span>0.0</span>
+                  <span>0.5</span>
+                  <span>1.0</span>
+                </div>
               </div>
             </div>
           </div>
-          
-          <div className="mb-6">
-            <label className="block text-gray-700 mb-2">Poids de distance</label>
-            <input
-              type="range"
-              value={distanceWeight}
-              onChange={(e) => {
-                const value = parseFloat(e.target.value);
-                setDistanceWeight(value);
-                setSimilarityWeight(parseFloat((1 - value).toFixed(1)));
-              }}
-              min="0"
-              max="1"
-              step="0.1"
-              className="w-full"
-            />
-            <div className="flex justify-between text-sm text-gray-600">
-              <span>0</span>
-              <span>{distanceWeight.toFixed(1)}</span>
-              <span>1</span>
-            </div>
-          </div>
-          
-          <div className="mb-6">
+
+          <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <label className="block text-gray-700">Votre localisation</label>
+              <label className="block text-sm font-medium text-blue-600">Votre localisation</label>
               <button
                 type="button"
                 onClick={getUserLocation}
-                className="text-blue-600 hover:text-blue-800"
+                className="inline-flex items-center text-blue-600 hover:text-blue-700 transition-colors"
               >
-                Utiliser ma position actuelle
+                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                Utiliser ma position
               </button>
             </div>
-            
-            <div className="grid grid-cols-2 gap-4 mt-2">
+
+            <div className="grid grid-cols-2 gap-4">
               <input
                 type="number"
                 value={userLocation?.latitude || ''}
-                onChange={(e) => setUserLocation({
-                  ...userLocation || { longitude: 0 },
+                onChange={(e) => setUserLocation(prev => ({
+                  ...prev || { longitude: 0 },
                   latitude: parseFloat(e.target.value)
-                })}
+                }))}
                 placeholder="Latitude"
-                className="w-full px-3 py-2 border rounded-md"
+                className="w-full px-4 py-2 rounded-xl border border-blue-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
               />
               <input
                 type="number"
                 value={userLocation?.longitude || ''}
-                onChange={(e) => setUserLocation({
-                  ...userLocation || { latitude: 0 },
+                onChange={(e) => setUserLocation(prev => ({
+                  ...prev || { latitude: 0 },
                   longitude: parseFloat(e.target.value)
-                })}
+                }))}
                 placeholder="Longitude"
-                className="w-full px-3 py-2 border rounded-md"
+                className="w-full px-4 py-2 rounded-xl border border-blue-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
               />
             </div>
           </div>
-          
-          <div className="flex justify-end">
+
+          <div className="pt-6">
             <button
               type="submit"
-              className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 disabled:bg-gray-400"
-              disabled={loading || (searchType === 'by-id' && !carId) || (searchType === 'by-text' && !textQuery)}
+              disabled={loading || !textQuery.trim()}
+              className="w-full py-4 bg-blue-600 text-white rounded-xl font-medium hover:bg-blue-700 disabled:opacity-50 disabled:hover:bg-blue-600 transition-colors flex items-center justify-center space-x-2"
             >
-              {loading ? 'Recherche...' : 'Rechercher'}
+              {loading ? (
+                <>
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  <span>Recherche en cours...</span>
+                </>
+              ) : (
+                <>
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                  <span>Rechercher des recommandations</span>
+                </>
+              )}
             </button>
           </div>
         </form>

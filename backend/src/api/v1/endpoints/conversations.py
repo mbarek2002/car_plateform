@@ -40,19 +40,19 @@ async def list_conversations(
     conversation_service: ConversationService = Depends(get_conversation_service)
     ):
     """List all conversations"""
-    try:
-        conversations = conversation_service.list_all(user_id = str(current_user.id))
-        return [
-            ConversationResponse(
-                conversation_id=conv["conversation_id"],
-                user_id=conv.get("user_id"),
-                title=conv["title"],
-                created_at=conv["created_at"]
-            )
-            for conv in conversations
-        ] 
-    except Exception as e :
-        raise HTTPException(status_code=500 , detail=str(e))
+    # try:
+    conversations = conversation_service.list_all(user_id = str(current_user.id))
+    return [
+        ConversationResponse(
+            conversation_id=conv["conversation_id"],
+            user_id=conv.get("user_id"),
+            title=conv["title"],
+            created_at=conv["created_at"]
+        )
+        for conv in conversations
+    ] 
+    # except Exception as e :
+    #     raise HTTPException(status_code=500 , detail=str(e))
 
 
 @router.get('/{conversation_id}' , response_model = ConversationResponse)

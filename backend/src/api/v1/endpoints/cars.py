@@ -37,7 +37,7 @@ def get_car(car_id: str):
 
 
 
-@router.get("/", response_model=list[CarResponse])
+@router.get("", response_model=list[CarResponse])
 def list_cars(
     skip: int = Query(0, ge=0),
     limit: int = Query(20, ge=1, le=100),

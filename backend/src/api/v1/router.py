@@ -32,4 +32,3 @@ async def app_info():
         "description":settings.PROJECT_DESCRIPTION,
         "version":settings.VERSION
     }
-

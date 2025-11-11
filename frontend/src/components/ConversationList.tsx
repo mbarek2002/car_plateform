@@ -23,9 +23,16 @@ const ConversationList: React.FC<ConversationListProps> = ({
       const data = await apiService.listConversations();
       setConversations(data);
       setError(null);
-    } catch (err) {
-      setError('Failed to load conversations');
-      console.error(err);
+    } catch (err: any) {
+      const status = err?.response?.status;
+      const detail = err?.response?.data?.detail || err?.message;
+      // Show a friendlier error for backend 500s so the UI remains usable
+      if (status === 500) {
+        setError('Conversations are temporarily unavailable. You can still start a new chat.');
+      } else {
+        setError(detail || 'Failed to load conversations');
+      }
+      console.error('listConversations error', err);
     } finally {
       setLoading(false);
     }
@@ -67,7 +74,7 @@ const ConversationList: React.FC<ConversationListProps> = ({
       <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border-b border-slate-200 dark:border-slate-700 px-6 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+            <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center">
               <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
               </svg>
@@ -78,7 +85,7 @@ const ConversationList: React.FC<ConversationListProps> = ({
             </div>
           </div>
           <button
-            className="px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white text-sm font-medium rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 flex items-center space-x-2"
+            className="px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white text-sm font-medium rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 flex items-center space-x-2"
             onClick={() => setOpenDialog(true)}
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -91,12 +98,20 @@ const ConversationList: React.FC<ConversationListProps> = ({
 
       {/* Error Message */}
       {error && (
-        <div className="mx-4 mt-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl">
-          <div className="flex items-center space-x-2">
-            <svg className="w-4 h-4 text-red-500" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-            </svg>
-            <span className="text-sm text-red-700 dark:text-red-300">{error}</span>
+        <div className="mx-4 mt-4 p-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <svg className="w-4 h-4 text-amber-600" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.721-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.981-1.742 2.981H4.42c-1.53 0-2.493-1.647-1.743-2.981l5.58-9.92zM11 13a1 1 0 10-2 0 1 1 0 002 0zm-1-2a1 1 0 01-1-1V7a1 1 0 112 0v3a1 1 0 01-1 1z" clipRule="evenodd" />
+              </svg>
+              <span className="text-sm text-amber-800 dark:text-amber-200">{error}</span>
+            </div>
+            <button
+              onClick={fetchConversations}
+              className="ml-3 px-3 py-1.5 text-xs rounded-lg bg-amber-600 text-white hover:bg-amber-700"
+            >
+              Retry
+            </button>
           </div>
         </div>
       )}
@@ -115,7 +130,7 @@ const ConversationList: React.FC<ConversationListProps> = ({
                 <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">No conversations yet</h3>
                 <p className="text-slate-600 dark:text-slate-300 text-sm mb-4">Start a new conversation to begin chatting with your documents</p>
                 <button
-                  className="px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white text-sm font-medium rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl"
+                  className="px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white text-sm font-medium rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl"
                   onClick={() => setOpenDialog(true)}
                 >
                   Create First Chat
@@ -137,7 +152,7 @@ const ConversationList: React.FC<ConversationListProps> = ({
                   onClick={() => onSelectConversation(conversation.conversation_id)}
                   className={`w-full text-left p-4 rounded-xl transition-all duration-200 group-hover:shadow-lg interactive-hover ${
                     selectedConversationId === conversation.conversation_id
-                      ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-xl transform scale-105'
+                      ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-xl transform scale-105'
                       : 'bg-white dark:bg-slate-700 hover:bg-slate-50 dark:hover:bg-slate-600 text-slate-900 dark:text-white border border-slate-200 dark:border-slate-600'
                   }`}
                 >
@@ -147,7 +162,7 @@ const ConversationList: React.FC<ConversationListProps> = ({
                         <div className={`w-2 h-2 rounded-full ${
                           selectedConversationId === conversation.conversation_id 
                             ? 'bg-white' 
-                            : 'bg-green-500'
+                            : 'bg-blue-500'
                         }`}></div>
                         <h3 className={`text-sm font-semibold truncate ${
                           selectedConversationId === conversation.conversation_id

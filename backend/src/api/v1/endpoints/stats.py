@@ -7,8 +7,8 @@ router = APIRouter(prefix="/stats", tags=["Statistics"])
 @router.get("")
 async def get_statistics(db=Depends(get_database)):
     """Get system statistics"""
-    try:
-        service = RAGService(db)
-        return service.get_statistics()
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    # try:
+    service = RAGService(db)
+    return service.get_statistics()
+    # except Exception as e:
+    #     raise HTTPException(status_code=500, detail=str(e))

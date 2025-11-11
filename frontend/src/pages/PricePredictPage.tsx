@@ -194,99 +194,90 @@ const PricePredictPage: React.FC = () => {
   };
 
   const InfoPill: React.FC<{ label: string; value: number | string | undefined }> = ({ label, value }) => (
-    <div className="px-2 py-1 rounded bg-slate-800/50 border border-slate-700/50 flex items-center justify-between">
-      <span className="text-gray-400">{label}</span>
-      <span className="font-medium text-gray-200 ml-2">{value ?? '-'}</span>
+    <div className="px-3 py-2 rounded-lg bg-blue-50/50 border border-blue-200 flex items-center justify-between hover:bg-blue-50 transition-colors">
+      <span className="text-xs font-medium text-blue-600">{label}</span>
+      <span className="font-semibold text-blue-900 ml-2">{value ?? '-'}</span>
     </div>
   );
 
   const Tag: React.FC<{ text: string }> = ({ text }) => (
-    <span className="text-[11px] px-2 py-1 rounded-full bg-slate-800/60 border border-slate-700/60 text-gray-200">
+    <span className="text-[11px] px-3 py-1.5 rounded-full bg-blue-50 border border-blue-200 text-blue-600 font-medium hover:bg-blue-100 transition-all duration-200">
       {text}
     </span>
   );
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6 animate-fade-in-up">
-      {/* Header */}
-      <div className="text-center space-y-4">
-        <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full mb-4 animate-pulse-slow">
-          <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-          </svg>
+    <div className="max-w-6xl mx-auto px-4 py-12 space-y-10">
+      {/* Hero Section */}
+      <div className="text-center space-y-6 mb-16">
+        <div className="relative">
+          <div className="absolute inset-0 blur-3xl bg-blue-100/30 rounded-full"></div>
+          <h1 className="relative text-4xl font-bold text-blue-600 animate-fade-in">
+            Car Price Predictor
+          </h1>
         </div>
-        <h1 className="text-4xl font-bold gradient-text">
-          Car Price Predictor
-        </h1>
-        <p className="text-gray-300 text-lg max-w-2xl mx-auto">
-          Get AI-powered price predictions for your vehicle based on market data and trends
+        <p className="text-xl  max-w-2xl mx-auto leading-relaxed">
+          Get instant AI-powered price predictions for your vehicle
         </p>
       </div>
 
-      {/* Prediction Form */}
-      <div className="card glass p-8 animate-slide-in-right">
-        <div className="flex items-center space-x-3 mb-6">
-          <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center">
-            <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      {/* Main Form Card */}
+      <div className="bg-white rounded-2xl p-8 shadow-xl hover:shadow-2xl transition-all duration-300 border border-blue-100">
+        <div className="flex items-center gap-4 mb-8">
+          <div className="w-12 h-12 rounded-xl bg-blue-500 text-white shadow-lg shadow-blue-200 flex items-center justify-center transform hover:scale-105 transition-transform">
+            <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
-          <h2 className="text-2xl font-semibold text-white">Vehicle Information</h2>
+          <h2 className="text-3xl font-bold text-blue-600">Vehicle Details</h2>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Form Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* Car Model */}
           <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-200">
-              Car Model *
-            </label>
+            <label className="block text-sm font-medium text-blue-500">Car Model *</label>
             <input
               type="text"
               value={predictionRequest.carModel}
               onChange={(e) => handleInputChange('carModel', e.target.value)}
               placeholder="e.g., Toyota Camry, BMW 3 Series"
-              className="input-primary hover-lift"
+              className="w-full px-4 py-2 rounded-lg bg-white border border-blue-500/20 focus:border-blue-500 focus:ring-1 focus:ring-blue-500/30 text-black placeholder-gray-500"
             />
           </div>
 
           {/* Year */}
           <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-200">
-              Model Year
-            </label>
+            <label className="block text-sm font-medium text-blue-500">Model Year</label>
             <input
               type="number"
               value={predictionRequest.year}
               onChange={(e) => handleInputChange('year', parseInt(e.target.value))}
               min="1990"
               max={new Date().getFullYear() + 1}
-              className="input-primary hover-lift"
+              className="w-full px-4 py-2 rounded-lg bg-white border border-blue-500/20 focus:border-blue-500 focus:ring-1 focus:ring-blue-500/30 text-black placeholder-gray-500"
             />
           </div>
 
           {/* Mileage */}
           <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-200">
-              Mileage (miles)
-            </label>
+            <label className="block text-sm font-medium text-blue-500">Mileage (miles)</label>
             <input
               type="number"
               value={predictionRequest.mileage}
               onChange={(e) => handleInputChange('mileage', parseInt(e.target.value))}
               min="0"
-              className="input-primary hover-lift"
+              className="w-full px-4 py-2 rounded-lg bg-white border border-blue-500/20 focus:border-blue-500 focus:ring-1 focus:ring-blue-500/30 text-black placeholder-gray-500"
             />
           </div>
 
           {/* Condition */}
           <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-200">
-              Condition
-            </label>
+            <label className="block text-sm font-medium text-blue-500">Condition</label>
             <select
               value={predictionRequest.condition}
               onChange={(e) => handleInputChange('condition', e.target.value)}
-              className="input-primary hover-lift"
+              className="w-full px-4 py-2 rounded-lg bg-white border border-blue-500/20 focus:border-blue-500 focus:ring-1 focus:ring-blue-500/30 text-black"
             >
               <option value="excellent">Excellent</option>
               <option value="very-good">Very Good</option>
@@ -297,160 +288,96 @@ const PricePredictPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Features */}
-        <div className="mt-6 space-y-3">
-          <label className="block text-sm font-medium text-gray-200">
-            Features & Options
-          </label>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+        {/* Features Grid */}
+        <div className="mt-10">
+          <h3 className="text-xl font-semibold text-blue-600 mb-4">Features & Options</h3>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
             {availableFeatures.map((feature) => (
-              <label
-                key={feature}
-                className="flex items-center space-x-3 p-3 rounded-lg bg-steel/30 border border-steel hover:bg-steel/50 cursor-pointer transition-colors"
-              >
+              <label key={feature} className="relative group">
                 <input
                   type="checkbox"
                   checked={predictionRequest.features.includes(feature)}
                   onChange={() => handleFeatureToggle(feature)}
-                  className="w-4 h-4 text-brand bg-steel border-steel rounded focus:ring-brand focus:ring-2"
+                  className="peer sr-only"
                 />
-                <span className="text-sm text-gray-200">{feature}</span>
+                <div className="p-4 rounded-xl bg-white border border-blue-200 shadow-sm hover:shadow peer-checked:border-blue-500 peer-checked:bg-blue-50 transition-all duration-200 cursor-pointer">
+                  <span className="text-sm font-medium text-blue-900 group-hover:text-blue-600 transition-colors">{feature}</span>
+                </div>
               </label>
             ))}
           </div>
         </div>
 
         {/* Predict Button */}
-        <div className="mt-8 flex justify-center">
+        <div className="mt-12 flex justify-center">
           <button
             onClick={handlePredict}
             disabled={loading || !predictionRequest.carModel.trim()}
-            className="btn-primary px-12 py-4 text-lg disabled:opacity-50 disabled:cursor-not-allowed hover-lift"
+            className="px-10 py-4 bg-blue-500 text-white rounded-xl text-lg font-semibold shadow-lg hover:shadow-xl hover:bg-blue-600 disabled:opacity-50 disabled:hover:bg-blue-500 transition-all duration-300 transform hover:-translate-y-0.5 disabled:hover:transform-none"
           >
             {loading ? (
-              <div className="flex items-center space-x-3">
-                <div className="spinner" />
-                <span>Analyzing Market Data...</span>
+              <div className="flex items-center gap-3">
+                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                <span>Processing...</span>
               </div>
             ) : (
-              <div className="flex items-center space-x-2">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-                <span>Get Price Prediction</span>
-              </div>
+              'Get Prediction'
             )}
           </button>
         </div>
       </div>
 
-      {/* Error Display */}
-      {error && (
-        <div className="bg-red-500/20 border border-red-500/50 rounded-xl p-4 text-red-200">
-          <div className="flex items-center space-x-2">
-            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-            </svg>
-            <span>{error}</span>
+      {/* Prediction Result */}
+      {prediction && (
+        <div className="bg-white rounded-2xl p-8 shadow-lg border border-blue-100 animate-fade-in-up">
+          <div className="text-center space-y-4">
+            <h3 className="text-2xl font-semibold text-blue-600">Predicted Market Value</h3>
+            <div className="text-7xl font-bold tracking-tight text-blue-700">
+              {formatPrice(prediction.predictedPrice)}
+            </div>
           </div>
         </div>
       )}
 
-      {/* Prediction Results */}
-      {prediction && (
-        <div className="space-y-6 animate-fade-in-up">
-          {/* Main Prediction Card */}
-          <div className="card glass p-8 bg-gradient-to-br from-blue-500/10 to-purple-600/10 border-blue-500/30">
-            <div className="text-center space-y-6">
-              <div className="flex items-center justify-center space-x-3">
-                <div className="w-12 h-12 bg-gradient-to-r from-green-400 to-blue-500 rounded-full flex items-center justify-center">
-                  <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+      {/* History Section */}
+      <div className="space-y-6">
+        <h3 className="text-2xl font-semibold text-blue-600">Recent Predictions</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+          {history.map((item) => (
+            <div key={item._id} className="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl border border-blue-100 transition-all duration-300 transform hover:-translate-y-1">
+              <div className="flex items-start justify-between mb-6">
+                <div>
+                  <div className="text-sm font-medium opacity-75">
+                    {new Date(item.created_at).toLocaleString()}
+                  </div>
+                  <div className="text-3xl font-bold mt-1">
+                    {formatPrice(item.predicted_price)}
+                  </div>
+                </div>
+                <div className="w-12 h-12 rounded-xl shadow-md flex items-center justify-center">
+                  <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M3 13h18l-1.5-3.75a4 4 0 0 0-3.7-2.5H8.2a4 4 0 0 0-3.7 2.5L3 13z" />
                   </svg>
                 </div>
-                <h3 className="text-3xl font-bold text-white">Predicted Market Value</h3>
               </div>
-              <div className="text-6xl font-bold gradient-text">
-                {prediction.predictedPrice.toFixed(2)}
-                {/* {formatPrice(prediction.predictedPrice)} */}
+              <div className="grid grid-cols-2 gap-3 text-xs mb-4">
+                <InfoPill label="Veh. Age" value={item.Vehicle_Age} />
+                <InfoPill label="HP" value={item.hp} />
+                <InfoPill label="Eng. cc" value={item.engine_displacement} />
+                <InfoPill label="MPY" value={item.Mileage_per_Year} />
               </div>
-              <div className="flex items-center justify-center space-x-6 text-sm">
-                <div className="flex items-center space-x-2 bg-slate-800/50 px-4 py-2 rounded-full">
-                  <span className="text-gray-300">This is a statistical model estimate.</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Disclaimer */}
-          <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-4 text-yellow-200 text-sm">
-            <div className="flex items-start space-x-2">
-              <svg className="w-5 h-5 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-              </svg>
-              <div>
-                <p className="font-medium">Disclaimer</p>
-                <p>This prediction is generated by a trained model on your inputs. Actual prices may vary based on local market conditions, vehicle history, and other factors not considered in this analysis.</p>
+              <div className="flex flex-wrap gap-2">
+                {item.Milage_Very_High ? <Tag text="Very High Mileage" /> : null}
+                {item.Milage_High ? <Tag text="High Mileage" /> : null}
+                {item.Milage_Medium ? <Tag text="Medium Mileage" /> : null}
+                {item.Age_Very_Old ? <Tag text="Very Old" /> : null}
+                {item.Age_Old ? <Tag text="Old" /> : null}
+                {item.Age_Mid ? <Tag text="Mid Age" /> : null}
+                {item.clean_title ? <Tag text="Clean Title" /> : null}
               </div>
             </div>
-          </div>
+          ))}
         </div>
-      )}
-
-      {/* Predictions History */}
-      <div className="space-y-4">
-        <div className="flex items-center space-x-3">
-          <div className="w-8 h-8 bg-teal-500 rounded-lg grid place-items-center">
-            <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3M5 11h14M5 19h14M5 15h14" />
-            </svg>
-          </div>
-          <h3 className="text-2xl font-semibold">Recent Predictions</h3>
-        </div>
-        {history.length === 0 ? (
-          <div className="card glass p-6 text-gray-300">No predictions yet.</div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-            {history.map((item) => (
-              <div key={item._id} className="card glass p-5 border border-slate-700/50 hover-lift">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <div className="text-sm text-gray-400">{new Date(item.created_at).toLocaleString()}</div>
-                    <div className="text-2xl font-bold gradient-text mt-1">
-                      {item.predicted_price.toFixed(2)}
-                      {/* {formatPrice(item.predicted_price)} */}
-
-                    </div>
-                  </div>
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 grid place-items-center">
-                    <svg className="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M3 13h18l-1.5-3.75a4 4 0 0 0-3.7-2.5H8.2a4 4 0 0 0-3.7 2.5L3 13z" />
-                    </svg>
-                  </div>
-                </div>
-                <div className="mt-4 grid grid-cols-2 gap-2 text-xs text-gray-300">
-                  <InfoPill label="Veh. Age" value={item.Vehicle_Age} />
-                  <InfoPill label="HP" value={item.hp} />
-                  <InfoPill label="Eng. cc" value={item.engine_displacement} />
-                  <InfoPill label="MPY" value={item.Mileage_per_Year} />
-                  <InfoPill label="Brand" value={item.brand} />
-                  <InfoPill label="Fuel" value={item.fuel_type} />
-                  <InfoPill label="Trans" value={item.transmission} />
-                  <InfoPill label="V-Engine" value={item.is_v_engine} />
-                </div>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  {item.Milage_Very_High ? <Tag text="Very High Mileage" /> : null}
-                  {item.Milage_High ? <Tag text="High Mileage" /> : null}
-                  {item.Milage_Medium ? <Tag text="Medium Mileage" /> : null}
-                  {item.Age_Very_Old ? <Tag text="Very Old" /> : null}
-                  {item.Age_Old ? <Tag text="Old" /> : null}
-                  {item.Age_Mid ? <Tag text="Mid Age" /> : null}
-                  {item.clean_title ? <Tag text="Clean Title" /> : null}
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
       </div>
     </div>
   );

@@ -31,14 +31,18 @@ git clone <repository-url>
 cd rag_system
 
 # Configure environment
-cp .env.example .env
+cp env.example .env
 # Edit .env with your API keys (GEMINI_API_KEY, PINECONE_API_KEY)
 
 # Start services
-docker-compose up -d
+docker-compose up --build -d
 ```
 
 **Access**: Frontend at http://localhost:3000, API at http://localhost:8000
+
+### Environment Variables
+
+All services read their configuration from `.env`. See `env.example` for a complete list of available variables and sane defaults for local Docker usage.
 
 ### Local Development
 ```bash
