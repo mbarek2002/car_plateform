@@ -194,9 +194,9 @@ class RAGService:
         self.vectordb.delete_by_pdf_id(pdf_id)
         # TODO: Also delete from vector DB
     
-    def get_statistics(self) -> dict:
+    def get_statistics(self ) -> dict:
         """Get system statistics"""
-        conversations = self.conversation_repo.find_all()
+        conversations = self.conversation_repo.find_all_conv()
         global_pdfs = self.pdf_repo.find_global_pdfs()
         total_pdfs = self.pdf_repo.count_all()
         
@@ -206,3 +206,4 @@ class RAGService:
             "global_pdfs": len(global_pdfs),
             "conversation_pdfs": total_pdfs - len(global_pdfs)
         }
+    

@@ -61,3 +61,4 @@ HEALTHCHECK --interval=30s --timeout=5s --retries=5 CMD curl -f http://localhost
 CMD ["supervisord", "-n", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
 
 
+

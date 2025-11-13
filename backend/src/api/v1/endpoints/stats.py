@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException, Depends
 from src.services.rag_service import RAGService
-from src.db.mongodb import get_database
+from src.db.mongodb import get_database 
+from src.api.deps import get_current_user
 
 router = APIRouter(prefix="/stats", tags=["Statistics"])
 

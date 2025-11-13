@@ -72,6 +72,7 @@ def get_current_user(token: str = Depends(oauth2_scheme),
         email :str = payload.get("sub")
         if email is None :
             raise credentials_exception
+        print(email)
     except PyJWTError :
         raise credentials_exception
     

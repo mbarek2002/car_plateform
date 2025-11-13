@@ -171,7 +171,7 @@ async def get_pdf_info(
 async def delete_pdf(
     pdf_id: str , 
     db=Depends(get_database),
-    pdf_service:PdfService=Depends(get_pdf_service),
+    # pdf_service:PdfService=Depends(get_pdf_service),
     rag_service:RAGService=Depends(get_rag_service)
     ):
     """Delete a specific PDF"""

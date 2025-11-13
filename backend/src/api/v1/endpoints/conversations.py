@@ -11,7 +11,7 @@ from src.api.deps import get_conversation_service , get_current_user
 
 router = APIRouter(prefix="/conversations", tags=["conversations"])
 
-@router.post('/' , response_model = ConversationResponse)
+@router.post('' , response_model = ConversationResponse)
 async def create_conversation(
     conversation : ConversationCreate ,
     current_user = Depends(get_current_user),
@@ -19,18 +19,18 @@ async def create_conversation(
       conversation_service: ConversationService = Depends(get_conversation_service)
       ):
     """Create a new conversation"""
-    try :
-        print("Current user:", current_user.id)  
-        conv_id = conversation_service.create( str(current_user.id), conversation.title)
-        conv_data = conversation_service.get(conv_id)
-        return ConversationResponse (
-            conversation_id = conv_data["conversation_id"],
-            user_id = conv_data["user_id"],
-            title = conv_data["title"],
-            created_at = conv_data["created_at"],
-        )
-    except Exception as e:
-        raise HTTPException(status_code=500 , detail=str(e))
+    # try :
+    print("Current user:", current_user.id)  
+    conv_id = conversation_service.create( str(current_user.id), conversation.title)
+    conv_data = conversation_service.get(conv_id)
+    return ConversationResponse (
+        conversation_id = conv_data["conversation_id"],
+        user_id = conv_data["user_id"],
+        title = conv_data["title"],
+        created_at = conv_data["created_at"],
+    )
+    # except Exception as e:
+    #     raise HTTPException(status_code=500 , detail=str(e))
 
 
 @router.get('' , response_model = List[ConversationResponse])
@@ -66,7 +66,8 @@ async def get_conversation(conversation_id:str,current_user = Depends(get_curren
         return ConversationResponse(
             conversation_id=conv["conversation_id"],
             title=conv["title"],
-            created_at=conv["created_at"]
+            created_at=conv["created_at"],
+            user_id = conv['user_id']
         )
     except HTTPException:
         raise

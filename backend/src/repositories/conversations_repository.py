@@ -19,11 +19,11 @@ class ConversationRepository:
     def find_by_id(self, conversation_id: str) -> Optional[Dict]:
         return self.collection.find_one({"conversation_id": conversation_id})
     
-    # def find_all(self , user_id:str) -> List[Dict]:
-    #     return list(self.collection.find({"user_id": user_id}).sort("created_at", -1))
+    def find_all(self , user_id:str) -> List[Dict]:
+        return list(self.collection.find({"user_id": user_id}).sort("created_at", -1))
     
     
-    def find_all(self) -> List[Dict]:
+    def find_all_conv(self) -> List[Dict]:
         return list(self.collection.find().sort("created_at", -1))
     
     def delete(self, conversation_id: str) -> int:
