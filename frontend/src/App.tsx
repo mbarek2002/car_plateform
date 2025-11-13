@@ -102,10 +102,10 @@ function AppShell() {
                     </div>
 
                     {/* Main Chat Interface */}
-                    <div className="grid grid-cols-1 xl:grid-cols-4 gap-6 h-[calc(100vh-200px)]">
+                    <div className="grid grid-cols-1 xl:grid-cols-4 gap-6">
                       {/* Conversations Sidebar */}
                       <div className="xl:col-span-1">
-                        <div className="h-full">
+                        <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-xl p-4 border border-slate-200 dark:border-slate-700">
                           <ConversationList 
                             onSelectConversation={(id) => setSelectedConversationId(id)}
                             selectedConversationId={selectedConversationId}
@@ -116,7 +116,7 @@ function AppShell() {
                       {/* Main Chat Area */}
                       <div className="xl:col-span-3 space-y-6">
                         {/* PDF Upload Section */}
-                        <div className="h-1/3">
+                        <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-xl p-4 border border-slate-200 dark:border-slate-700">
                           <PDFUpload 
                             conversationId={selectedConversationId} 
                             onPDFUploaded={() => fetchPDFs()}
@@ -127,9 +127,7 @@ function AppShell() {
                         </div>
 
                         {/* Chat Interface */}
-                        <div className="h-2/3">
-                          <ChatInterface conversationId={selectedConversationId} />
-                        </div>
+                        <ChatInterface conversationId={selectedConversationId} />
                       </div>
                     </div>
 

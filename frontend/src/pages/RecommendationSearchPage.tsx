@@ -68,11 +68,22 @@ const RecommendationSearchPage: React.FC = () => {
     }
   };
 
+  // Hero header
   return (
-    <div className="max-w-4xl mx-auto px-4 py-12">
-      <div className="text-center mb-12">
-        <h1 className="text-4xl font-bold text-blue-600 mb-4">Recherche de Voiture</h1>
-        <p className="text-gray-600 text-lg">Trouvez la voiture parfaite en décrivant vos préférences</p>
+    <div className="max-w-4xl mx-auto px-4 py-12 space-y-10">
+      <div className="relative rounded-3xl p-8 md:p-12 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100 shadow-sm text-center">
+        <div className="absolute inset-0 -z-10 blur-3xl bg-blue-100/30 rounded-[2rem]"></div>
+        <h1 className="text-3xl md:text-4xl font-bold text-blue-700">Recherche de Voiture</h1>
+        <p className="mt-3 text-gray-700 text-lg">Trouvez la voiture parfaite en décrivant vos préférences</p>
+        <div className="mt-6 flex items-center justify-center gap-2 flex-wrap">
+          <span className="px-3 py-1.5 rounded-full bg-white/70 border border-blue-200 text-sm text-blue-700">Recherche texte</span>
+          <span className="px-3 py-1.5 rounded-full bg-white/70 border border-blue-200 text-sm text-blue-700">Basée sur la localisation</span>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mt-6">
+          <div className="px-3 py-2 rounded-full bg-white/70 border border-blue-200 text-sm text-blue-700">Ex: SUV familial économique</div>
+          <div className="px-3 py-2 rounded-full bg-white/70 border border-blue-200 text-sm text-blue-700">Ex: Sportive rouge &lt; 50k km</div>
+          <div className="px-3 py-2 rounded-full bg-white/70 border border-blue-200 text-sm text-blue-700">Ex: Hybride, automatique, 2018+</div>
+        </div>
       </div>
 
       {error && (
@@ -97,7 +108,7 @@ const RecommendationSearchPage: React.FC = () => {
             <textarea
               value={textQuery}
               onChange={(e) => setTextQuery(e.target.value)}
-              className="w-full px-4 py-3 rounded-xl border border-blue-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all resize-none"
+              className="w-full px-4 py-3 rounded-2xl border border-blue-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all resize-none"
               rows={4}
               placeholder="Ex: Je recherche une voiture sportive rouge avec moins de 50000 km..."
             />
@@ -112,7 +123,7 @@ const RecommendationSearchPage: React.FC = () => {
                 onChange={(e) => setTopN(parseInt(e.target.value))}
                 min="1"
                 max="50"
-                className="w-full px-4 py-2 rounded-xl border border-blue-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
+                className="w-full px-4 py-2 rounded-full border border-blue-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
               />
             </div>
 
@@ -165,7 +176,7 @@ const RecommendationSearchPage: React.FC = () => {
               <button
                 type="button"
                 onClick={getUserLocation}
-                className="inline-flex items-center text-blue-600 hover:text-blue-700 transition-colors"
+                className="inline-flex items-center px-3 py-1.5 rounded-full border border-blue-200 text-blue-700 hover:bg-blue-50 transition-colors"
               >
                 <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
@@ -184,7 +195,7 @@ const RecommendationSearchPage: React.FC = () => {
                   latitude: parseFloat(e.target.value)
                 }))}
                 placeholder="Latitude"
-                className="w-full px-4 py-2 rounded-xl border border-blue-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
+                className="w-full px-4 py-2 rounded-full border border-blue-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
               />
               <input
                 type="number"
@@ -194,7 +205,7 @@ const RecommendationSearchPage: React.FC = () => {
                   longitude: parseFloat(e.target.value)
                 }))}
                 placeholder="Longitude"
-                className="w-full px-4 py-2 rounded-xl border border-blue-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
+                className="w-full px-4 py-2 rounded-full border border-blue-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
               />
             </div>
           </div>
@@ -203,7 +214,7 @@ const RecommendationSearchPage: React.FC = () => {
             <button
               type="submit"
               disabled={loading || !textQuery.trim()}
-              className="w-full py-4 bg-blue-600 text-white rounded-xl font-medium hover:bg-blue-700 disabled:opacity-50 disabled:hover:bg-blue-600 transition-colors flex items-center justify-center space-x-2"
+              className="w-full py-4 bg-blue-600 text-white rounded-full font-medium hover:bg-blue-700 disabled:opacity-50 disabled:hover:bg-blue-600 transition-colors flex items-center justify-center space-x-2"
             >
               {loading ? (
                 <>

@@ -72,26 +72,26 @@ const ConversationList: React.FC<ConversationListProps> = ({
     <div className="w-full h-full bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-slate-800 rounded-2xl overflow-hidden shadow-2xl">
       {/* Header */}
       <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border-b border-slate-200 dark:border-slate-700 px-6 py-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center">
+        <div className="flex items-center justify-between flex-col sm:flex-row gap-3">
+          <div className="flex items-center space-x-3 w-full sm:w-auto">
+            <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
               <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
               </svg>
             </div>
             <div>
-              <h2 className="text-lg font-semibold text-slate-900 dark:text-white">Conversations</h2>
-              <p className="text-xs text-slate-500 dark:text-slate-400">{conversations.length} active</p>
+              <h2 className="text-lg font-semibold text-slate-900 dark:text-white">Chats</h2>
+              <p className="text-xs text-slate-500 dark:text-slate-400">{conversations.length} chats</p>
             </div>
           </div>
           <button
-            className="px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white text-sm font-medium rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 flex items-center space-x-2"
+            className="w-full sm:w-auto px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-full transition-all duration-200 shadow-sm flex items-center justify-center space-x-2"
             onClick={() => setOpenDialog(true)}
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
             </svg>
-            <span>New Chat</span>
+            <span>New</span>
           </button>
         </div>
       </div>
@@ -130,7 +130,7 @@ const ConversationList: React.FC<ConversationListProps> = ({
                 <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">No conversations yet</h3>
                 <p className="text-slate-600 dark:text-slate-300 text-sm mb-4">Start a new conversation to begin chatting with your documents</p>
                 <button
-                  className="px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white text-sm font-medium rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl"
+                  className="w-full sm:w-auto px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-full transition-all duration-200 shadow-sm"
                   onClick={() => setOpenDialog(true)}
                 >
                   Create First Chat
@@ -239,10 +239,10 @@ const ConversationList: React.FC<ConversationListProps> = ({
                   Cancel
                 </button>
                 <button
-                  className={`flex-1 px-4 py-3 rounded-xl font-medium transition-all duration-200 ${
+                  className={`flex-1 px-4 py-3 rounded-full font-medium transition-all duration-200 ${
                     creating || !newConversationTitle.trim()
                       ? 'bg-slate-300 dark:bg-slate-600 text-slate-500 cursor-not-allowed'
-                      : 'bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white shadow-lg hover:shadow-xl'
+                      : 'bg-blue-600 hover:bg-blue-700 text-white shadow-sm'
                   }`}
                   onClick={handleCreateConversation}
                   disabled={creating || !newConversationTitle.trim()}

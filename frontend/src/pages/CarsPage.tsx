@@ -50,20 +50,33 @@ const CarsPage: React.FC = () => {
     setSkip(prev => Math.max(0, prev - limit));
   };
 
+  const clearFilters = () => {
+    setFilters({});
+    setSkip(0);
+  };
+
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
       {/* Hero Section */}
-      <div className="text-center mb-12">
-        <h1 className="text-4xl md:text-5xl font-bold text-blue-600 mb-4">
-          Explore Our Cars
-        </h1>
-        <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-          Find your perfect car from our extensive collection of quality vehicles
-        </p>
+      <div className="mb-10">
+        <div className="relative overflow-hidden rounded-3xl border border-blue-100 bg-gradient-to-br from-blue-50 via-white to-indigo-50">
+          <div className="px-6 md:px-10 py-10 md:py-14 text-center">
+            <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-blue-900">Find Your Next Car</h1>
+            <p className="mt-3 text-gray-600 max-w-2xl mx-auto">Browse hand‑picked listings with clean UI and smooth filters.</p>
+            <div className="mt-6 flex justify-center gap-4">
+              <button onClick={clearFilters} className="px-4 py-2 rounded-full bg-blue-600 text-white hover:bg-blue-700 transition-colors">Clear filters</button>
+              <a href="#cars" className="px-4 py-2 rounded-full bg-white text-blue-600 border border-blue-200 hover:bg-blue-50 transition-colors">Browse cars</a>
+            </div>
+          </div>
+          <div className="absolute inset-0 pointer-events-none">
+            <div className="absolute -top-10 -left-10 w-40 h-40 bg-blue-200/40 rounded-full blur-2xl"></div>
+            <div className="absolute -bottom-12 -right-12 w-56 h-56 bg-indigo-200/40 rounded-full blur-3xl"></div>
+          </div>
+        </div>
       </div>
 
       {/* Filters Card */}
-      <div className="bg-white rounded-2xl shadow-lg p-6 mb-8 transition-all duration-300 hover:shadow-xl border border-blue-100">
+      <div className="bg-white rounded-2xl shadow-lg p-6 mb-8 transition-all duration-300 hover:shadow-xl border border-blue-100 md:sticky md:top-6">
         <h2 className="text-2xl font-semibold text-blue-600 mb-6 flex items-center gap-2">
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
@@ -130,11 +143,19 @@ const CarsPage: React.FC = () => {
 
       {/* Loading State */}
       {loading ? (
-        <div className="flex justify-center items-center h-64">
-          <div className="relative w-20 h-20">
-            <div className="absolute top-0 left-0 w-full h-full border-4 border-blue-200 rounded-full animate-pulse"></div>
-            <div className="absolute top-0 left-0 w-full h-full border-4 border-blue-500 rounded-full animate-spin border-t-transparent"></div>
-          </div>
+        <div id="cars" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {[...Array(6)].map((_, i) => (
+            <div key={i} className="rounded-2xl border border-blue-100 bg-white p-6 animate-pulse">
+              <div className="h-24 bg-gradient-to-r from-blue-100 via-indigo-100 to-blue-50 rounded-xl mb-5"></div>
+              <div className="h-6 bg-blue-100 rounded w-3/4 mb-4"></div>
+              <div className="h-4 bg-blue-50 rounded w-1/3 mb-3"></div>
+              <div className="flex gap-3">
+                <div className="h-6 bg-gray-100 rounded w-20"></div>
+                <div className="h-6 bg-gray-100 rounded w-24"></div>
+                <div className="h-6 bg-gray-100 rounded w-28"></div>
+              </div>
+            </div>
+          ))}
         </div>
       ) : (
         <>
@@ -149,37 +170,37 @@ const CarsPage: React.FC = () => {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {cars.map((car) => (
-                <Link to={`/cars/${car.car_id}`} key={car.car_id} 
-                  className="group block transform transition-all duration-300 hover:-translate-y-1">
-                  <div className="bg-white rounded-2xl shadow-lg overflow-hidden border border-blue-50 group-hover:shadow-xl transition-shadow">
+                <Link to={`/cars/${car.car_id}`} key={car.car_id} className="group block">
+                  <div className="bg-white rounded-2xl shadow-sm border border-blue-100 overflow-hidden transition-all duration-300 group-hover:shadow-md group-hover:border-blue-200">
+                    <div className="h-24 bg-gradient-to-r from-blue-100 via-indigo-100 to-blue-50"></div>
                     <div className="p-6 space-y-4">
-                      <h3 className="text-2xl font-bold text-blue-900 group-hover:text-blue-600 transition-colors">
-                        {car.manufacturer} {car.model}
-                      </h3>
-                      <div className="flex justify-between items-center">
-                        <span className="text-gray-600 bg-blue-50 px-3 py-1 rounded-full text-sm">
-                          {car.year}
-                        </span>
-                        <span className="text-2xl font-bold text-blue-600">
+                      <div className="flex items-start justify-between">
+                        <h3 className="text-xl md:text-2xl font-semibold text-blue-900 group-hover:text-blue-700 transition-colors">
+                          {car.manufacturer} {car.model}
+                        </h3>
+                        <span className="inline-flex items-center rounded-full bg-blue-600 text-white px-3 py-1 text-sm font-medium shadow-sm">
                           {car.price.toLocaleString()}€
                         </span>
                       </div>
-                      <div className="flex gap-3 text-sm text-gray-600">
+                      <div className="flex items-center gap-3 text-sm text-gray-600">
+                        <span className="bg-blue-50 text-blue-700 px-3 py-1 rounded-full">{car.year}</span>
                         {car.fuel && (
-                          <span className="bg-gray-100 px-3 py-1 rounded-full">
-                            {car.fuel}
-                          </span>
+                          <span className="bg-gray-100 px-3 py-1 rounded-full">{car.fuel}</span>
                         )}
                         {car.transmission && (
-                          <span className="bg-gray-100 px-3 py-1 rounded-full">
-                            {car.transmission}
-                          </span>
+                          <span className="bg-gray-100 px-3 py-1 rounded-full">{car.transmission}</span>
                         )}
                         {car.odometer && (
-                          <span className="bg-gray-100 px-3 py-1 rounded-full">
-                            {car.odometer.toLocaleString()} km
-                          </span>
+                          <span className="bg-gray-100 px-3 py-1 rounded-full">{car.odometer.toLocaleString()} km</span>
                         )}
+                      </div>
+                      <div className="pt-2">
+                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-blue-200 text-blue-700 bg-white hover:bg-blue-50 transition-colors">
+                          <span>View details</span>
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                          </svg>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -193,8 +214,11 @@ const CarsPage: React.FC = () => {
             <button
               onClick={handlePrevPage}
               disabled={skip === 0}
-              className="px-6 py-3 rounded-xl bg-white border border-blue-200 text-blue-600 hover:bg-blue-50 disabled:opacity-50 disabled:hover:bg-white transition-colors"
+              className="px-6 py-3 rounded-full bg-white border border-blue-200 text-blue-600 hover:bg-blue-50 disabled:opacity-50 disabled:hover:bg-white transition-colors inline-flex items-center gap-2"
             >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
               Previous
             </button>
             <span className="text-lg font-medium text-blue-900">
@@ -203,9 +227,12 @@ const CarsPage: React.FC = () => {
             <button
               onClick={handleNextPage}
               disabled={cars.length < limit}
-              className="px-6 py-3 rounded-xl bg-white border border-blue-200 text-blue-600 hover:bg-blue-50 disabled:opacity-50 disabled:hover:bg-white transition-colors"
+              className="px-6 py-3 rounded-full bg-white border border-blue-200 text-blue-600 hover:bg-blue-50 disabled:opacity-50 disabled:hover:bg-white transition-colors inline-flex items-center gap-2"
             >
               Next
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
             </button>
           </div>
         </>

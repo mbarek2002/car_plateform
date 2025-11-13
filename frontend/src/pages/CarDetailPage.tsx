@@ -14,6 +14,16 @@ const defaultIcon = new Icon({
   iconAnchor: [12, 41],
 });
 
+const Chip: React.FC<{ label: string; tone?: 'blue' | 'gray' }> = ({ label, tone = 'gray' }) => (
+  <span className={
+    tone === 'blue'
+      ? 'inline-flex items-center px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-sm'
+      : 'inline-flex items-center px-3 py-1 rounded-full bg-gray-100 text-gray-700 text-sm'
+  }>
+    {label}
+  </span>
+);
+
 const CarDetailPage: React.FC = () => {
   const { carId } = useParams<{ carId: string }>();
   const [car, setCar] = useState<Car | null>(null);
@@ -41,10 +51,22 @@ const CarDetailPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-screen">
-        <div className="relative w-20 h-20">
-          <div className="absolute top-0 left-0 w-full h-full border-4 border-blue-200 rounded-full animate-ping"></div>
-          <div className="absolute top-0 left-0 w-full h-full border-4 border-blue-500 rounded-full animate-spin border-t-transparent"></div>
+      <div className="max-w-7xl mx-auto px-4 py-12">
+        <div className="rounded-3xl border border-blue-100 bg-white overflow-hidden">
+          <div className="h-28 bg-gradient-to-r from-blue-100 via-indigo-100 to-blue-50" />
+          <div className="p-8 animate-pulse">
+            <div className="h-8 w-2/3 bg-blue-100 rounded mb-4" />
+            <div className="h-6 w-1/4 bg-blue-50 rounded mb-6" />
+            <div className="flex gap-3 mb-6">
+              <div className="h-6 w-20 bg-gray-100 rounded" />
+              <div className="h-6 w-24 bg-gray-100 rounded" />
+              <div className="h-6 w-28 bg-gray-100 rounded" />
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="h-40 bg-gray-100 rounded-xl" />
+              <div className="h-40 bg-gray-100 rounded-xl" />
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -78,19 +100,32 @@ const CarDetailPage: React.FC = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 py-12">
       <div className="mb-6">
-        <Link to="/cars" className="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors">
+        <Link to="/cars" className="inline-flex items-center px-4 py-2 rounded-full bg-white border border-blue-200 text-blue-600 hover:bg-blue-50 transition-colors">
           <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
           </svg>
-          Retour à la liste des voitures
+          Retour aux voitures
         </Link>
       </div>
 
-      <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
+      <div className="bg-white rounded-3xl shadow-xl overflow-hidden border border-blue-100">
+        <div className="h-28 bg-gradient-to-r from-blue-100 via-indigo-100 to-blue-50" />
         <div className="p-8">
-          <div className="mb-8">
-            <h1 className="text-4xl font-bold text-gray-900 mb-2">{car.manufacturer} {car.model}</h1>
-            <div className="text-3xl font-bold text-blue-600">{car.price.toLocaleString()} €</div>
+          <div className="flex items-start justify-between mb-6">
+            <div>
+              <h1 className="text-3xl md:text-4xl font-extrabold text-blue-900">{car.manufacturer} {car.model}</h1>
+              <div className="mt-3 flex flex-wrap gap-2">
+                <Chip label={`${car.year}`} tone="blue" />
+                {car.fuel && <Chip label={car.fuel} />}
+                {car.transmission && <Chip label={car.transmission} />}
+                {car.odometer !== undefined && <Chip label={`${car.odometer.toLocaleString()} km`} />}
+                {car.type && <Chip label={car.type} />}
+                {car.paint_color && <Chip label={car.paint_color} />}
+              </div>
+            </div>
+            <div className="inline-flex items-center rounded-full bg-blue-600 text-white px-5 py-2 text-lg font-semibold shadow-sm">
+              {car.price.toLocaleString()} €
+            </div>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
@@ -193,7 +228,7 @@ const CarDetailPage: React.FC = () => {
           <div className="flex flex-wrap gap-4 border-t pt-8">
             <Link 
               to={`/recommendations/${car.car_id}`} 
-              className="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors shadow-lg hover:shadow-xl"
+              className="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors shadow-lg hover:shadow-xl"
             >
               <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16l2.879-2.879m0 0a3 3 0 104.243-4.242 3 3 0 00-4.243 4.242zM21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -206,7 +241,7 @@ const CarDetailPage: React.FC = () => {
                 href={car.url} 
                 target="_blank" 
                 rel="noopener noreferrer" 
-                className="inline-flex items-center px-6 py-3 border-2 border-blue-600 text-blue-600 rounded-xl hover:bg-blue-50 transition-colors"
+                className="inline-flex items-center px-6 py-3 border-2 border-blue-600 text-blue-600 rounded-full hover:bg-blue-50 transition-colors"
               >
                 <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />

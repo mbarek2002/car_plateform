@@ -130,18 +130,18 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ conversationId, mode = 'c
   };
 
   return (
-    <div className="flex flex-col h-full bg-white dark:bg-slate-800 rounded-lg overflow-hidden shadow-sm">
+    <div className="flex flex-col bg-white/90 dark:bg-slate-800/90 rounded-2xl overflow-hidden shadow-md border border-slate-200 dark:border-slate-700 backdrop-blur">
       {/* Chat Header - Simplified */}
-      <div className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 px-4 py-2">
+      <div className="bg-white/80 dark:bg-slate-800/80 border-b border-slate-200 dark:border-slate-700 px-4 py-3">
         <div className="flex items-center">
-          <h3 className="text-base font-medium text-slate-900 dark:text-white">
+          <h3 className="text-sm font-semibold text-slate-900 dark:text-white">
             {mode === 'prediction' ? 'Price Assistant' : 'AI Chat'}
           </h3>
         </div>
       </div>
 
       {/* Messages Area - Simplified */}
-      <div className="flex-1 overflow-y-auto p-3 space-y-2 bg-white dark:bg-slate-800 custom-scrollbar">
+      <div className="overflow-y-auto max-h-[60vh] p-4 space-y-3 bg-transparent custom-scrollbar">
         {loadingMessages ? (
           <div className="h-full flex items-center justify-center">
             <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500"></div>
@@ -167,17 +167,17 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ conversationId, mode = 'c
               className={`flex ${message.isUser ? 'justify-end' : 'justify-start'}`}
             >
               {/* Simplified Message Bubble */}
-              <div className={`px-3 py-2 rounded-lg max-w-[80%] ${
+              <div className={`px-4 py-2.5 rounded-2xl max-w-[75%] shadow-sm ${
                 message.isUser
-                  ? 'bg-blue-500 text-white'
-                  : 'bg-gray-100 dark:bg-slate-700 text-slate-900 dark:text-white'
+                  ? 'bg-gradient-to-br from-blue-600 to-indigo-600 text-white'
+                  : 'bg-slate-100 dark:bg-slate-700 text-slate-900 dark:text-white'
               }`}>
                 <div className="whitespace-pre-wrap text-sm">
                   {message.text}
                 </div>
                 {message.timestamp && (
                   <div className={`text-xs mt-1 ${
-                    message.isUser ? 'text-blue-100' : 'text-slate-500 dark:text-slate-400'
+                    message.isUser ? 'text-white/70' : 'text-slate-500 dark:text-slate-400'
                   }`}>
                     {message.timestamp.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
                   </div>
@@ -190,7 +190,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ conversationId, mode = 'c
         {/* Simplified Typing Indicator */}
         {loading && (
           <div className="flex justify-start">
-            <div className="bg-gray-100 dark:bg-slate-700 rounded-lg px-3 py-2">
+            <div className="bg-slate-100 dark:bg-slate-700 rounded-2xl px-4 py-2.5 shadow-sm">
               <div className="flex space-x-1">
                 <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
                 <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse delay-75"></div>
@@ -240,22 +240,22 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ conversationId, mode = 'c
       </div>
 
       {/* Simplified Input Area */}
-      <div className="bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 p-3">
+      <div className="bg-white/80 dark:bg-slate-800/80 border-t border-slate-200 dark:border-slate-700 p-3">
         <div className="flex items-center space-x-2">
           <input
             type="text"
-            className="flex-1 px-3 py-2 bg-gray-100 dark:bg-slate-700 border-none rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-400"
+            className="flex-1 px-4 py-2.5 bg-slate-100 dark:bg-slate-700 border-none rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-400"
             placeholder={mode === 'prediction' ? "Ask about car prices..." : "Ask a question..."}
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
             onKeyDown={handleKeyDown}
           />
           <button
-            className={`h-9 w-9 rounded-lg flex items-center justify-center ${
+            className={`${
               loading || !inputText.trim()
                 ? 'bg-gray-300 dark:bg-slate-600 cursor-not-allowed'
-                : 'bg-blue-500 hover:bg-blue-600'
-            }`}
+                : 'bg-blue-600 hover:bg-blue-700'
+            } px-4 h-10 rounded-full flex items-center space-x-2`}
             onClick={handleSendMessage}
             disabled={loading || !inputText.trim()}
             aria-label="Send message"
@@ -268,6 +268,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ conversationId, mode = 'c
             >
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
             </svg>
+            <span className="text-sm text-white font-medium">Send</span>
           </button>
         </div>
       </div>
