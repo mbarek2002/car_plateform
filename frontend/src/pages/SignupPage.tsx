@@ -100,7 +100,7 @@ const SignupPage: React.FC = () => {
                 type="email"
                 autoComplete="email"
                 required
-                className="w-full px-4 py-3 border border-zinc-300 dark:border-gray-600 placeholder-zinc-500 dark:placeholder-gray-400 text-zinc-900 dark:text-white bg-white dark:bg-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 shadow-sm"
+                className="input-primary"
                 placeholder="Enter your email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -117,7 +117,7 @@ const SignupPage: React.FC = () => {
                 type="password"
                 autoComplete="new-password"
                 required
-                className="w-full px-4 py-3 border border-zinc-300 dark:border-gray-600 placeholder-zinc-500 dark:placeholder-gray-400 text-zinc-900 dark:text-white bg-white dark:bg-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 shadow-sm"
+                className="input-primary"
                 placeholder="Create a password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -134,7 +134,7 @@ const SignupPage: React.FC = () => {
                 type="password"
                 autoComplete="new-password"
                 required
-                className="w-full px-4 py-3 border border-zinc-300 dark:border-gray-600 placeholder-zinc-500 dark:placeholder-gray-400 text-zinc-900 dark:text-white bg-white dark:bg-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 shadow-sm"
+                className="input-primary"
                 placeholder="Confirm your password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
@@ -163,11 +163,11 @@ const SignupPage: React.FC = () => {
             <button
               type="submit"
               disabled={loading}
-              className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl"
+              className="btn-primary w-full focus-ring disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? (
                 <div className="flex items-center">
-                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                  <div className="spinner mr-2"></div>
                   Creating account...
                 </div>
               ) : (

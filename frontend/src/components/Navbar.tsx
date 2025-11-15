@@ -32,7 +32,9 @@ const Navbar: React.FC = () => {
             <NavItem to="/cars" label="Cars" active={isActive('/cars')} />
             <NavItem to="/recommendation-search" label="Find Car" active={isActive('/recommendation-search')} />
             <NavItem to="/price" label="Price" active={isActive('/price')} />
-            <NavItem to="/stats" label="Stats" active={isActive('/stats')} />
+            {isAuthenticated && <NavItem to="/stats" label="Stats" active={isActive('/stats')} />}
+            {isAuthenticated && <NavItem to="/pdfs" label="Global PDFs" active={isActive('/pdfs')} />}
+            {isAuthenticated && <NavItem to="/chat" label="Chat" active={isActive('/chat')} />}
           </div>
 
           {isAuthenticated ? (
@@ -75,7 +77,9 @@ const Navbar: React.FC = () => {
             <NavItem to="/cars" label="Cars" active={isActive('/cars')} />
             <NavItem to="/recommendation-search" label="Find Car" active={isActive('/recommendation-search')} />
             <NavItem to="/price" label="Price" active={isActive('/price')} />
-            <NavItem to="/stats" label="Stats" active={isActive('/stats')} />
+            {isAuthenticated && <NavItem to="/stats" label="Stats" active={isActive('/stats')} />}
+            {isAuthenticated && <NavItem to="/pdfs" label="Global PDFs" active={isActive('/pdfs')} />}
+            {isAuthenticated && <NavItem to="/chat" label="Chat" active={isActive('/chat')} />}
             {isAuthenticated ? (
               <>
                 <NavItem to="/settings" label="Settings" active={isActive('/settings')} />

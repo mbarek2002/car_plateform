@@ -55,14 +55,15 @@ function AppShell() {
       setLoadingPdfs(true);
       setPdfError(null);
 
-      let pdfs: PDFInfo[];
-      if (targetConversationId) {
-        pdfs = await apiService.getConversationPdfs(targetConversationId);
-      } else {
-        pdfs = await apiService.getGlobalPdfs();
+      if (!targetConversationId) {
+        const globals = await apiService.getGlobalPdfs();
+        setPdfList(globals);
+        return;
       }
 
-      if (targetConversationId === selectedConversationId || (targetConversationId === undefined && selectedConversationId === undefined)) {
+      const pdfs = await apiService.getConversationPdfs(targetConversationId);
+
+      if (targetConversationId === selectedConversationId) {
         setPdfList(pdfs);
       }
     } catch (error) {
@@ -185,7 +186,11 @@ function AppShell() {
               </ProtectedRoute>
             } />
             <Route path="/price" element={<PricePredictPage />} />
-            <Route path="/stats" element={<StatsPage />} />
+            <Route path="/stats" element={
+              <ProtectedRoute>
+                <StatsPage />
+              </ProtectedRoute>
+            } />
             <Route path="/health" element={<HealthPage />} />
             <Route path="/settings" element={
               <ProtectedRoute>

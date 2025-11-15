@@ -36,7 +36,7 @@ class Settings:
     ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
     # rag service
-    rag_service = None
+    rag_service = None  
 
     # Data Source
     DATA_FILE_PATH: str = "src/data/cars_embeddings.json"
