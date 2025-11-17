@@ -88,10 +88,11 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ conversationId, mode = 'c
         // Use query endpoint for regular chat
         response = await apiService.queryRAG(questionText, conversationId);
       }
+      const cleanedAnswer = response.answer.replace(/\*\*Answer:\*\*/i, "").trim();
 
       const botMessage: Message = {
         id: (Date.now() + 1).toString(),
-        text: response.answer,
+        text: cleanedAnswer,
         isUser: false,
         timestamp: new Date()
       };

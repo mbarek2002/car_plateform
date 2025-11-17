@@ -16,7 +16,6 @@ class CarRepository :
     def __init__(self):
         self.settings = settings
         self.data_file = CarRepository._current_dir / self.settings.DATA_FILE_PATH
-        # self.data_file = Path(self.settings.DATA_FILE_PATH or "data/cars.json")
         if CarRepository._data_cache is  None:
             self._load_data()
 

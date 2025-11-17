@@ -1,4 +1,4 @@
-from pydantic import BaseModel , EmailStr
+from pydantic import BaseModel , EmailStr , ConfigDict
 
 class UserCreate(BaseModel):
     email : EmailStr

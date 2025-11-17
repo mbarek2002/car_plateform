@@ -448,7 +448,7 @@ const PricePredictPage: React.FC = () => {
                 <path d="M12 1C5.925 1 1 5.925 1 12s4.925 11 11 11 11-4.925 11-11S18.075 1 12 1zm1 17h-2v-2h2v2zm0-4h-2V7h2v7z" />
               </svg>
               <span className="text-4xl md:text-6xl font-bold tracking-tight text-blue-700">
-                {formatPrice(prediction.predictedPrice)}
+                ${prediction.predictedPrice.toFixed(2)}
               </span>
             </div>
           </div>

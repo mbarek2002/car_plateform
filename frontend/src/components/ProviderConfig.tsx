@@ -174,7 +174,7 @@ const ProviderConfig: React.FC = () => {
               label="LLM Provider"
               value={config.llm_provider || ''}
               options={[
-                { value: '', label: 'None' },
+                // { value: '', label: 'None' },
                 { value: 'gemini', label: 'Gemini' },
                 { value: 'huggingface', label: 'HuggingFace' },
                 { value: 'ngrok', label: 'Ngrok' }
@@ -188,7 +188,7 @@ const ProviderConfig: React.FC = () => {
               label="Embedding Provider"
               value={config.embedding_provider || ''}
               options={[
-                { value: '', label: 'None' },
+                // { value: '', label: 'None' },
                 { value: 'gemini', label: 'Gemini' },
                 { value: 'huggingface', label: 'HuggingFace' }
               ]}
@@ -201,7 +201,7 @@ const ProviderConfig: React.FC = () => {
               label="Vector DB Provider"
               value={config.vectordb_provider || ''}
               options={[
-                { value: '', label: 'None' },
+                // { value: '', label: 'None' },
                 { value: 'chroma', label: 'Chroma' },
                 { value: 'pinecone', label: 'Pinecone' }
               ]}
